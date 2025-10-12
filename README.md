@@ -44,8 +44,8 @@ This project is a versatile Telegram bot designed to enhance group management, p
 1.  Clone the repository:
 
     ```bash
-    git clone https://github.com/svazerID/telegram
-    cd telegram
+    git clone https://github.com/svazerID/telegramBot
+    cd telegramBot
     ```
 
 2.  Install dependencies:
