@@ -1,0 +1,26 @@
+name: Extract breviz.zip
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.TOKEN }}
+      
+      - name: Extract breviz.zip
+        run: |
+          unzip breviz.zip -d ./
+          
+      - name: Commit & Push hasil extract
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Extract breviz.zip" || echo "No changes to commit"
+          git push
