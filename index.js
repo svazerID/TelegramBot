@@ -11,7 +11,7 @@ const path = require("path");
 const setting = require("./setting");
 const { exec, execSync } = require("child_process");
 const crypto = require("crypto");
-const chalk = require("chalk");
+const chalk = new (require('chalk').Chalk)();
 
 // Load dari setting.js
 const BOT_TOKEN = setting.BOT_TOKEN;
@@ -115,9 +115,9 @@ async function isGroupAdmin(ctx) {
 
 // Fungsi untuk API removebg
 async function removeBgFromUrl(imageUrl) {
-  const res = await axios.get(`https://api.zenzxz.my.id/tools/removebg?url=${encodeURIComponent(imageUrl)}`);
-  if (!res.data || !res.data.status || !res.data.result) throw new Error("API gagal atau data tidak valid");
-  return res.data.result;
+  const res = await axios.get(`https://alfixd-api.koyeb.app/removebg?url=${encodeURIComponent(imageUrl)}`);
+  if (!res.data || res.data.status !== 200 || !res.data.url) throw new Error("API gagal atau data tidak valid");
+  return res.data.url;
 }
 
 // FUNCTION PREM DAN ADMIN 
@@ -265,12 +265,7 @@ function saveUsers(set) {
   fs.writeFileSync("./database/users.json", JSON.stringify([...set], null, 2));
 }
 
-bot.use((ctx, next) => {
-  if (ctx.callbackQuery) {
-    console.log("DEBUG CALLBACK:", ctx.callbackQuery.data);
-  }
-  return next();
-});
+
 
 // ====== Start Command ======
 bot.start(async (ctx) => {
@@ -417,10 +412,6 @@ bot.action('funmenu', async (ctx) => {
 <b>│▢ /gombalan</b>
 <b>│▢ /gombalin</b>
 <b>│▢ /galau</b>
-<b>│▢ /caklontong</b>
-<b>│▢ /asahotak</b>
-<b>│▢ /tebaklirik</b>
-<b>│▢ /tebaklagu</b>
 <b>┗───────────────────ⓘ</b>
 
 </blockquote>
@@ -503,8 +494,11 @@ bot.action('downmenu', async (ctx) => {
 <b>│▢ /ytmp4 </b>
 <b>│▢ /yt </b>
 <b>│▢ /spotify </b>
-<b>│▢ /spotifydl_ </b>
 <b>│▢ /ttdown </b>
+<b>│▢ /aio </b>
+<b>│▢ /instagram </b>
+<b>│▢ /tiktoksearch </b>
+<b>│▢ /pinterest </b>
 <b>┗───────────────────ⓘ</b>
 
 </blockquote>
@@ -544,6 +538,10 @@ bot.action('aimenu', async (ctx) => {
 
 <b>┏─「  𝐀𝐢 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
 <b>│▢ /inori</b>
+<b>│▢ /deepseek</b>
+<b>│▢ /claude</b>
+<b>│▢ /genimage</b>
+<b>│▢ /gemini</b>
 <b>┗───────────────────ⓘ</b>
 
 </blockquote>
@@ -583,7 +581,13 @@ bot.action('toolsmenu', async (ctx) => {
 
 <b>┏─「  𝐓𝐨𝐨𝐥𝐬 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
 <b>│▢ /tourl</b>
-<b>│▢ /decodebase64</b>
+<b>│▢ /editimg</b>
+<b>│▢ /felosearch</b>
+<b>│▢ /nanobanana</b>
+<b>│▢ /enhance</b>
+<b>│▢ /infogempa</b>
+<b>│▢ /screenshot</b>
+<b>│▢ /jadwalsholat</b>
 <b>┗───────────────────ⓘ</b>
 
 </blockquote>
@@ -664,10 +668,6 @@ bot.action('primbonmenu', async (ctx) => {
 👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
 
 <b>┏─「  𝐏𝐫𝐢𝐦𝐛𝐨𝐧 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>│▢ /zodiak </b>
-<b>│▢ /artinama </b>
-<b>│▢ /kecocokan</b>
-<b>│▢ /tafsirmimpi </b>
 <b>┗───────────────────ⓘ</b>
 
 </blockquote>
@@ -686,7 +686,7 @@ bot.command("yt", async (ctx) => {
     const query = ctx.message.text.split(" ").slice(1).join(" ");
     if (!query) return ctx.reply("❌ Masukkan judul atau link YouTube!");
 
-    const searchUrl = `https://api.zenzxz.my.id/search/youtube?q=${encodeURIComponent(
+    const searchUrl = `https://api.nekolabs.my.id/discovery/youtube/search?q=${encodeURIComponent(
       query
     )}`;
 
@@ -795,22 +795,21 @@ bot.action(/ytmp3:(\d+)/, async (ctx) => {
 
     await ctx.reply("🎵 Sedang menyiapkan file MP3...");
 
-    const apiUrl = `https://api.zenzxz.my.id/downloader/ytmp3?url=${encodeURIComponent(
+    const apiUrl = `https://api.nekolabs.my.id/downloader/youtube/v1?url=${encodeURIComponent(
       vid.url
-    )}`;
+    )}&format=mp3`;
     const { data } = await axios.get(apiUrl);
 
-    const ok = data?.status ?? true; // beberapa API tidak pakai 'status'
-    const dl = pickDownloadUrl(data?.result || data);
+    const dl = data.result.downloadUrl;
 
-    if (!ok || !dl) return ctx.reply("❌ Gagal convert ke MP3.");
+    if (!dl) return ctx.reply("❌ Gagal convert ke MP3.");
 
     await ctx.replyWithAudio(
       { url: dl },
       {
-        title: (data.result && data.result.title) || vid.title || "Audio",
+        title: data.result.title || vid.title || "Audio",
         performer:
-          (data.result && (data.result.author || data.result.uploader)) ||
+          data.result.channel ||
           vid.channel ||
           "Unknown",
       }
@@ -830,19 +829,18 @@ bot.action(/ytmp4:(\d+)/, async (ctx) => {
 
     await ctx.reply("🎥 Sedang menyiapkan file MP4...");
 
-    const apiUrl = `https://api.zenzxz.my.id/downloader/ytmp4?url=${encodeURIComponent(
+    const apiUrl = `https://api.nekolabs.my.id/downloader/youtube/v1?url=${encodeURIComponent(
       vid.url
-    )}`;
+    )}&format=480`;
     const { data } = await axios.get(apiUrl);
 
-    const ok = data?.status ?? true;
-    const dl = pickDownloadUrl(data?.result || data);
+    const dl = data.result.downloadUrl;
 
-    if (!ok || !dl) return ctx.reply("❌ Gagal convert ke MP4.");
+    if (!dl) return ctx.reply("❌ Gagal convert ke MP4.");
 
     await ctx.replyWithVideo(
       { url: dl },
-      { caption: `🎬 ${((data.result && data.result.title) || vid.title || "Video")}` }
+      { caption: `🎬 ${data.result.title || vid.title || "Video"}` }
     );
   } catch (err) {
     console.error("❌ Error ytmp4:", err?.response?.status || err.message);
@@ -850,118 +848,47 @@ bot.action(/ytmp4:(\d+)/, async (ctx) => {
   }
 });
 
-// 📌 FITUR bratvid
 bot.command("bratvid", async (ctx) => {
   const text = ctx.message.text.split(" ").slice(1).join(" ");
-  if (!text) return ctx.reply("❌ Contoh: /bratvid haiii...");
-  if (text.length > 100) return ctx.reply("⚠️ Karakter terbatas, max 100!");
-
-  const tempDir = path.join(process.cwd(), "session");
-  if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
-  const framePaths = [];
+  if (!text) return ctx.reply("❌ Contoh: /bratvid hallo gaes");
 
   try {
-    // ambil frame per kata
-    const words = text.split(" ");
-    for (let i = 0; i < words.length; i++) {
-      const currentText = words.slice(0, i + 1).join(" ");
-      const res = await axios
-        .get(
-          `https://api.zenzxz.my.id/maker/bratvid?text=${encodeURIComponent(
-            currentText
-          )}`,
-          { responseType: "arraybuffer" }
-        )
-        .catch((e) => e.response);
+    await ctx.reply("⏳ Wait...");
 
-      if (!res || !res.data) return ctx.reply("❌ Gagal ambil frame dari API");
+    const apiUrl = `https://alfixd-api.koyeb.app/bratvid?text=${encodeURIComponent(text)}&background=%23FFFFFF&color=%23000000`;
+    const res = await axios.get(apiUrl, { timeout: 60000 }); // 60s timeout for video generation
+    const data = res.data;
 
-      const framePath = path.join(tempDir, `frame${i}.mp4`);
-      fs.writeFileSync(framePath, res.data);
-      framePaths.push(framePath);
+    if (data.status === "success" && data.video_url) {
+      await ctx.replyWithVideo({ url: data.video_url }, { caption: "✅ Brat video berhasil dibuat!" });
+    } else {
+      ctx.reply("⚠️ Gagal membuat video brat. Coba lagi nanti.");
     }
-
-    if (framePaths.length === 0) return ctx.reply("⚠️ Tidak ada frame dihasilkan.");
-
-    // bikin file list buat concat
-    const fileListPath = path.join(tempDir, "filelist.txt");
-    let fileListContent = framePaths
-      .map((frame) => `file '${frame}'\nduration 0.7`)
-      .join("\n");
-    fileListContent += `\nfile '${
-      framePaths[framePaths.length - 1]
-    }'\nduration 2`;
-    fs.writeFileSync(fileListPath, fileListContent);
-
-    // hasil video + stiker webm
-    const outputVideoPath = path.join(tempDir, "output.mp4");
-    const outputStickerPath = path.join(tempDir, "output.webm");
-
-    // concat jadi video mp4
-    execSync(
-      `ffmpeg -y -f concat -safe 0 -i ${fileListPath} -vf "fps=30,format=yuv420p,scale=512:512:flags=lanczos" -c:v libx264 -preset ultrafast ${outputVideoPath}`,
-      { stdio: "ignore" }
-    );
-    if (!fs.existsSync(outputVideoPath)) return ctx.reply("❌ Error bikin video.");
-
-    // convert ke stiker WEBM animasi
-    execSync(
-      `ffmpeg -y -i ${outputVideoPath} -c:v libvpx-vp9 -b:v 1M -an -fs 2560k ${outputStickerPath}`,
-      { stdio: "ignore" }
-    );
-    if (!fs.existsSync(outputStickerPath)) return ctx.reply("❌ Error bikin sticker.");
-
-    // kirim stiker animasi
-    await ctx.replyWithSticker({ source: outputStickerPath });
-
-    // bersihkan file
-    framePaths.forEach((f) => fs.existsSync(f) && fs.unlinkSync(f));
-    [fileListPath, outputVideoPath, outputStickerPath].forEach((f) =>
-      fs.existsSync(f) ? fs.unlinkSync(f) : null
-    );
-  } catch (e) {
-    console.error(e);
-    ctx.reply("❌ Terjadi kesalahan dalam proses.");
+  } catch (err) {
+    console.error("❌ Error bratvid:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat membuat video brat.");
   }
 });
 
 bot.command("brat", async (ctx) => {
   const text = ctx.message.text.split(" ").slice(1).join(" ");
-  if (!text) return ctx.reply("❌ Contoh: /brat alfi kontol");
-
-  await ctx.reply("⏳ Wait...");
-
-  const imageUrl = `https://api.zenzxz.my.id/maker/brat?text=${encodeURIComponent(
-    text
-  )}`;
-  const inputPath = path.join(__dirname, "temp_image.jpg");
-  const outputPath = path.join(__dirname, "sticker.webp");
+  if (!text) return ctx.reply("❌ Contoh: /brat hallo gaes");
 
   try {
-    // download gambar
-    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-    fs.writeFileSync(inputPath, response.data);
+    await ctx.reply("⏳ Wait...");
 
-    // convert ke sticker webp
-    exec(
-      `ffmpeg -y -i ${inputPath} -vf "scale=512:512:force_original_aspect_ratio=decrease" -c:v libwebp -lossless 1 -q:v 80 -preset default -an -vsync 0 ${outputPath}`,
-      async (error) => {
-        if (error) {
-          console.error("❌ Gagal konversi:", error);
-          return ctx.reply("❌ Gagal membuat stiker");
-        }
+    const apiUrl = `https://alfixd-api.koyeb.app/brat?text=${encodeURIComponent(text)}&background=%23FFFFFF&color=%23000000`;
+    const res = await axios.get(apiUrl, { timeout: 30000 });
+    const data = res.data;
 
-        // kirim stiker
-        await ctx.replyWithSticker({ source: outputPath });
-
-        // hapus file sementara
-        fs.unlinkSync(inputPath);
-        fs.unlinkSync(outputPath);
-      }
-    );
+    if (data.status === "success" && data.image_url) {
+      await ctx.replyWithPhoto({ url: data.image_url }, { caption: "✅ Brat image berhasil dibuat!" });
+    } else {
+      ctx.reply("⚠️ Gagal membuat gambar brat. Coba lagi nanti.");
+    }
   } catch (err) {
-    console.error("❌ Error:", err);
-    ctx.reply("❌ Gagal membuat stiker");
+    console.error("❌ Error brat:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat membuat gambar brat.");
   }
 });
 
@@ -981,32 +908,26 @@ bot.command("igstalk", async (ctx) => {
   if (!text) return ctx.reply("❌ Username tidak valid!");
 
   try {
+    await ctx.reply("Sedang mengintip profil Instagram...");
     const res = await axios.get(
-      `https://api.zenzxz.my.id/stalker/instagram?username=${encodeURIComponent(text)}`
+      `https://alfixd-api.koyeb.app/igstalk?username=${encodeURIComponent(text)}`
     );
 
-    const data = res.data;
-    console.log("DEBUG IGSTALK:", data);
+    const user = res.data;
 
-    if (!data || !data.result) {
-      return ctx.reply("❌ Username tidak ditemukan atau API error!");
+    if (!user || user.username === null) {
+      return ctx.reply("❌ Username tidak ditemukan atau profil bersifat pribadi.");
     }
 
-    const user = data.result;
-
     let caption = `📸 <b>Instagram Stalker</b>\n\n`;
-    caption += `👤 <b>Username:</b> ${escapeHTML(user.username) || "-"}\n`;
-    caption += `📛 <b>Nickname:</b> ${escapeHTML(user.name || user.full_name) || "-"}\n`;
-    caption += `🆔 <b>ID:</b> ${escapeHTML(user.id?.toString() || "-")}\n`;
-    caption += `📝 <b>Bio:</b> ${escapeHTML(user.bio || user.biography || "-")}\n`;
-    caption += `📌 <b>Posts:</b> ${user.posts || user.media_count || "0"}\n`;
+    caption += `👤 <b>Username:</b> ${escapeHTML(text)}\n`;
+    caption += `📛 <b>Full Name:</b> ${escapeHTML(user.fullname) || "-"}\n`;
+    caption += `📝 <b>Bio:</b> ${escapeHTML(user.bio) || "-"}\n`;
+    caption += `📌 <b>Posts:</b> ${user.posts || "0"}\n`;
     caption += `👥 <b>Followers:</b> ${user.followers || "0"}\n`;
     caption += `➡️ <b>Following:</b> ${user.following || "0"}\n`;
-    caption += `🌍 <b>Website:</b> ${escapeHTML(user.external_url || "-")}\n`;
-    caption += `✅ <b>Verified:</b> ${user.is_verified ? "Yes" : "No"}\n`;
-    caption += `🔒 <b>Private:</b> ${user.is_private ? "Yes" : "No"}\n`;
 
-    const photoUrl = user.profile_pic || user.profile_pic_url || null;
+    const photoUrl = user.profilePic || null;
 
     if (photoUrl) {
       await ctx.replyWithPhoto(
@@ -1018,7 +939,7 @@ bot.command("igstalk", async (ctx) => {
     }
   } catch (e) {
     console.error("❌ IGSTALK Error:", e.message);
-    ctx.reply("❌ Gagal mengambil data Instagram (mungkin API down).");
+    ctx.reply("❌ Gagal mengambil data Instagram (mungkin API down atau username tidak valid).");
   }
 });
 
@@ -1031,56 +952,46 @@ bot.command("ttstalk", async (ctx) => {
   if (!text) return ctx.reply("❌ Username tidak valid!");
 
   try {
+    await ctx.reply("Sedang mengintip profil TikTok...");
     const res = await axios.get(
-      `https://api.zenzxz.my.id/stalker/tiktok?username=${encodeURIComponent(text)}`
+      `https://alfixd-api.koyeb.app/tiktokstalk?username=${encodeURIComponent(text)}`
     );
 
     const data = res.data;
 
-    // 🔍 DEBUG supaya tahu struktur API
-    console.log("RAW DATA:", JSON.stringify(data, null, 2));
-
-    if (!data || !data.result) {
+    if (!data.status || !data.data) {
       return ctx.reply("❌ Username tidak ditemukan atau API error!");
     }
 
-    // user info (kadang ada di result.user, kadang di result langsung)
-    const user = data.result.user || data.result || {};
+    const user = data.data.user;
+    const stats = data.data.stats;
 
-    // ambil stats (cek di user.stats, user.statsV2, atau data.result.stats)
-    const stats = user.stats || user.statsV2 || data.result.stats || {};
-
-    // fungsi escape biar aman ditampilkan
-    const escapeHTML = (str = "") =>
-      str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-    // caption yang bakal dikirim
     let caption = `🎵 <b>TikTok Stalker</b>\n\n`;
-    caption += `👤 <b>Username:</b> ${escapeHTML(user.uniqueId || "-")}\n`;
-    caption += `📛 <b>Nickname:</b> ${escapeHTML(user.nickname || "-")}\n`;
-    caption += `🆔 <b>ID:</b> ${escapeHTML(user.id?.toString() || "-")}\n`;
-    caption += `📝 <b>Bio:</b> ${escapeHTML(user.signature || "-")}\n\n`;
+    caption += `👤 <b>Username:</b> ${escapeHTML(user.uniqueId) || "-"}\n`;
+    caption += `📛 <b>Nickname:</b> ${escapeHTML(user.nickname) || "-"}\n`;
+    caption += `🆔 <b>ID:</b> ${escapeHTML(user.id) || "-"}\n`;
+    caption += `📝 <b>Bio:</b> ${escapeHTML(user.signature) || "-"}\n\n`;
 
-    // statistik
-    caption += `🎥 <b>Videos:</b> ${stats.videoCount || stats.video_count || "0"}\n`;
-    caption += `👥 <b>Followers:</b> ${stats.followerCount || stats.fans || "0"}\n`;
-    caption += `➡️ <b>Following:</b> ${stats.followingCount || stats.following || "0"}\n`;
-    caption += `❤️ <b>Hearts:</b> ${stats.heart || stats.heartCount || stats.likes || "0"}\n`;
-    caption += `👫 <b>Friends:</b> ${stats.friendCount || stats.friends || "0"}\n`;
+    caption += `🎥 <b>Videos:</b> ${stats.videoCount || "0"}\n`;
+    caption += `👥 <b>Followers:</b> ${stats.followerCount || "0"}\n`;
+    caption += `➡️ <b>Following:</b> ${stats.followingCount || "0"}\n`;
+    caption += `❤️ <b>Hearts:</b> ${stats.heartCount || "0"}\n`;
     caption += `✅ <b>Verified:</b> ${user.verified ? "Yes" : "No"}\n`;
+    caption += `🔒 <b>Private:</b> ${user.privateAccount ? "Yes" : "No"}\n`;
 
-    // ambil foto profil
-    const photoUrl =
-      user.avatarLarger || user.avatarMedium || user.avatarThumb || null;
+    const photoUrl = user.avatarLarger || user.avatarMedium || user.avatarThumb || null;
 
     if (photoUrl) {
-      await ctx.replyWithPhoto({ url: photoUrl }, { caption, parse_mode: "HTML" });
+      await ctx.replyWithPhoto(
+        { url: photoUrl },
+        { caption, parse_mode: "HTML" }
+      );
     } else {
       await ctx.reply(caption, { parse_mode: "HTML" });
     }
   } catch (e) {
     console.error("❌ TTSTALK Error:", e.message);
-    ctx.reply("❌ Gagal mengambil data TikTok (mungkin API down).");
+    ctx.reply("❌ Gagal mengambil data TikTok (mungkin API down atau username tidak valid).");
   }
 });
 
@@ -1175,6 +1086,585 @@ bot.command("inori", async (ctx) => {
   } catch (err) {
     console.error("❌ Error API:", err?.response?.data || err?.message || err);
     await ctx.reply("Ups! inori lagi error atau API down 😢");
+  }
+});
+
+bot.command("deepseek", async (ctx) => {
+  const userText = ctx.message?.text?.split(" ").slice(1).join(" ") || "";
+  if (!userText) return ctx.reply("Contoh: /deepseek Hai apa kabar?");
+
+  try {
+    await ctx.reply("Mencari jawaban...");
+    const url = `https://alfixd-api.koyeb.app/chat?model=deepseek-v3.1&prompt=${encodeURIComponent(userText)}`;
+    const res = await axios.get(url, { timeout: 30000 });
+    const d = res.data;
+
+    function extractText(obj) {
+      if (obj == null) return null;
+      if (typeof obj === 'string') {
+        const s = obj.trim();
+        if ((s.startsWith('{') || s.startsWith('[')) && s.length > 0) {
+          try {
+            return extractText(JSON.parse(s));
+          } catch (e) {}
+        }
+        return s || null;
+      }
+      if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
+      if (Array.isArray(obj)) {
+        for (const el of obj) {
+          const t = extractText(el);
+          if (t) return t;
+        }
+      } else if (typeof obj === 'object') {
+        const keys = ['reply', 'response', 'result', 'output', 'text', 'content', 'data', 'answer', 'message', 'choices'];
+        for (const k of keys) {
+          if (k in obj) {
+            const t = extractText(obj[k]);
+            if (t) return t;
+          }
+        }
+        for (const val of Object.values(obj)) {
+          const t = extractText(val);
+          if (t) return t;
+        }
+      }
+      return null;
+    }
+
+    let aiResponse = extractText(d);
+    if (!aiResponse) aiResponse = "Maaf, respon API tidak bisa dibaca.";
+
+    await ctx.reply(aiResponse, { reply_to_message_id: ctx.message.message_id });
+  } catch (err) {
+    console.error("❌ Error API:", err?.response?.data || err?.message || err);
+    await ctx.reply("Ups! Deepseek lagi error atau API down 😢");
+  }
+});
+
+bot.command("claude", async (ctx) => {
+  const userText = ctx.message?.text?.split(" ").slice(1).join(" ") || "";
+  if (!userText) return ctx.reply("Contoh: /claude Hai apa kabar?");
+
+  try {
+    await ctx.reply("Mencari jawaban...");
+    const url = `https://alfixd-api.koyeb.app/claude`;
+    const res = await axios.post(url, { text: userText }, { timeout: 30000 });
+    const d = res.data;
+
+    const aiResponse = d.response.data;
+
+    if (!aiResponse) aiResponse = "Maaf, respon API tidak bisa dibaca.";
+
+    await ctx.reply(aiResponse, { reply_to_message_id: ctx.message.message_id });
+  } catch (err) {
+    console.error("❌ Error API:", err?.response?.data || err?.message || err);
+    await ctx.reply("Ups! Claude lagi error atau API down 😢");
+  }
+});
+
+bot.command("editimg", async (ctx) => {
+  const prompt = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!prompt) {
+    return ctx.reply("❌ Contoh: Reply ke gambar dengan /editimg <prompt>");
+  }
+
+  if (!ctx.message.reply_to_message || !ctx.message.reply_to_message.photo) {
+    return ctx.reply("❌ Reply ke foto yang ingin di-edit dengan command /editimg");
+  }
+
+  try {
+    await ctx.reply("Sedang mengedit gambar...");
+
+    const photoArr = ctx.message.reply_to_message.photo;
+    const fileId = photoArr[photoArr.length - 1].file_id;
+    const file = await ctx.telegram.getFile(fileId);
+    const fileUrl = `https://api.telegram.org/file/bot${bot.token}/${file.file_path}`;
+
+    const apiUrl = `https://alfixd-api.koyeb.app/editimg?imageUrl=${encodeURIComponent(fileUrl)}&prompt=${encodeURIComponent(prompt)}`;
+    const res = await axios.get(apiUrl, { timeout: 60000 }); // 60 seconds timeout for image processing
+    const data = res.data;
+
+    if (data.status && data.image && data.image.url) {
+      await ctx.replyWithPhoto({ url: data.image.url }, { caption: "✅ Gambar berhasil di-edit!" });
+    } else {
+      ctx.reply("⚠️ Gagal mengedit gambar. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error editimg:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mengedit gambar.");
+  }
+});
+
+bot.command("felosearch", async (ctx) => {
+  const query = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!query) {
+    return ctx.reply("❌ Contoh: /felosearch siapakah presiden Indonesia sekarang?");
+  }
+
+  try {
+    await ctx.reply("Sedang mencari informasi...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/felosearch?prompt=${encodeURIComponent(query)}`;
+    const res = await axios.get(apiUrl, { timeout: 30000 });
+    const data = res.data;
+
+    if (data.hasil) {
+      await ctx.reply(data.hasil, { parse_mode: "Markdown" });
+    } else {
+      ctx.reply("⚠️ Gagal mencari informasi. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error felosearch:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mencari informasi.");
+  }
+});
+
+bot.command("genimage", async (ctx) => {
+  const prompt = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!prompt) {
+    return ctx.reply("❌ Contoh: /genimage kids palestine");
+  }
+
+  try {
+    await ctx.reply("Sedang membuat gambar...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/aifreebox-image?prompt=${encodeURIComponent(prompt)}&aspectRatio=1%3A1&slug=ai-art-generator`;
+    const res = await axios.get(apiUrl, { timeout: 60000 }); // 60 seconds timeout for image generation
+    const data = res.data;
+
+    if (data.imageUrl) {
+      await ctx.replyWithPhoto({ url: data.imageUrl }, { caption: "✅ Gambar berhasil dibuat!" });
+    } else {
+      ctx.reply("⚠️ Gagal membuat gambar. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error genimage:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat membuat gambar.");
+  }
+});
+
+bot.command("gemini", async (ctx) => {
+  const prompt = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!prompt) {
+    return ctx.reply("❌ Contoh: /gemini <prompt> atau reply ke gambar dengan /gemini <prompt>");
+  }
+
+  try {
+    await ctx.reply("Sedang berkomunikasi dengan Gemini...");
+
+    let apiUrl = `https://alfixd-api.koyeb.app/gemini?prompt=${encodeURIComponent(prompt)}`;
+
+    if (ctx.message.reply_to_message && ctx.message.reply_to_message.photo) {
+      const photoArr = ctx.message.reply_to_message.photo;
+      const fileId = photoArr[photoArr.length - 1].file_id;
+      const file = await ctx.telegram.getFile(fileId);
+      const fileUrl = `https://api.telegram.org/file/bot${bot.token}/${file.file_path}`;
+      apiUrl += `&imageUrl=${encodeURIComponent(fileUrl)}`;
+    }
+
+    const res = await axios.get(apiUrl, { timeout: 60000 });
+    const data = res.data;
+
+    if (data.status && data.result) {
+      await ctx.reply(data.result);
+    } else {
+      ctx.reply("⚠️ Gagal mendapatkan respon dari Gemini. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error Gemini:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat berkomunikasi dengan Gemini.");
+  }
+});
+
+bot.command("nanobanana", async (ctx) => {
+  const prompt = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!prompt) {
+    return ctx.reply("❌ Contoh: Reply ke gambar dengan /nanobanana <prompt>");
+  }
+
+  if (!ctx.message.reply_to_message || !ctx.message.reply_to_message.photo) {
+    return ctx.reply("❌ Reply ke foto yang ingin di-edit dengan command /nanobanana");
+  }
+
+  try {
+    await ctx.reply("Sedang mengedit gambar dengan Nano Banana...");
+
+    const photoArr = ctx.message.reply_to_message.photo;
+    const fileId = photoArr[photoArr.length - 1].file_id;
+    const file = await ctx.telegram.getFile(fileId);
+    const fileUrl = `https://api.telegram.org/file/bot${bot.token}/${file.file_path}`;
+
+    const apiUrl = `https://alfixd-api.koyeb.app/nano-banana?imageUrl=${encodeURIComponent(fileUrl)}&prompt=${encodeURIComponent(prompt)}`;
+    const res = await axios.get(apiUrl, { timeout: 60000 }); // 60 seconds timeout for image processing
+    const data = res.data;
+
+    if (data.success && data.result && data.result.results && data.result.results[0] && data.result.results[0].url) {
+      await ctx.replyWithPhoto({ url: data.result.results[0].url }, { caption: "✅ Gambar berhasil di-edit dengan Nano Banana!" });
+    } else {
+      ctx.reply("⚠️ Gagal mengedit gambar. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error nanobanana:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mengedit gambar.");
+  }
+});
+
+bot.command("enhance", async (ctx) => {
+  if (!ctx.message.reply_to_message || !ctx.message.reply_to_message.photo) {
+    return ctx.reply("❌ Reply ke foto yang ingin di-enhance dengan command /enhance");
+  }
+
+  try {
+    await ctx.reply("Sedang meningkatkan kualitas gambar...");
+
+    const photoArr = ctx.message.reply_to_message.photo;
+    const fileId = photoArr[photoArr.length - 1].file_id;
+    const file = await ctx.telegram.getFile(fileId);
+    const fileUrl = `https://api.telegram.org/file/bot${bot.token}/${file.file_path}`;
+
+    try {
+      // Try primary API (remini)
+      const reminiUrl = `https://alfixd-api.koyeb.app/remini?imageUrl=${encodeURIComponent(fileUrl)}&scale=2&faceEnhance=true`;
+      const reminiRes = await axios.get(reminiUrl, { timeout: 90000 });
+      const reminiData = reminiRes.data;
+
+      if (reminiData.status === "success" && reminiData.result) {
+        await ctx.replyWithPhoto({ url: reminiData.result }, { caption: "✅ Gambar berhasil di-enhance dengan Remini!" });
+        return;
+      }
+    } catch (reminiErr) {
+      console.error("❌ Error Remini:", reminiErr?.response?.data || reminiErr?.message || reminiErr);
+      // If Remini fails, proceed to fallback API
+    }
+
+    await ctx.reply("Remini gagal, mencoba fallback API (Upscale)...");
+
+    try {
+      // Try fallback API (upscale2)
+      const upscaleUrl = `https://alfixd-api.koyeb.app/upscale2?imageUrl=${encodeURIComponent(fileUrl)}&denoice_strength=1&resolution=6`;
+      const upscaleRes = await axios.get(upscaleUrl, { timeout: 90000 });
+      const upscaleData = upscaleRes.data;
+
+      if (upscaleData.result) {
+        await ctx.replyWithPhoto({ url: upscaleData.result }, { caption: "✅ Gambar berhasil di-enhance dengan Upscaler!" });
+        return;
+      }
+    } catch (upscaleErr) {
+      console.error("❌ Error Upscale2:", upscaleErr?.response?.data || upscaleErr?.message || upscaleErr);
+    }
+
+    ctx.reply("⚠️ Gagal meningkatkan kualitas gambar dengan kedua API. Coba lagi nanti.");
+
+  } catch (err) {
+    console.error("❌ Error Enhance:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat meningkatkan kualitas gambar.");
+  }
+});
+
+bot.command("infogempa", async (ctx) => {
+  try {
+    await ctx.reply("Sedang mencari informasi gempa terkini...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/infogempa`;
+    const res = await axios.get(apiUrl, { timeout: 30000 });
+    const data = res.data;
+
+    if (data.status && data.result) {
+      const gempa = data.result;
+      const caption = `
+Waktu: ${gempa.waktu}
+Koordinat: ${gempa.koordinat}
+Magnitudo: ${gempa.magnitudo}
+Kedalaman: ${gempa.kedalaman}
+Wilayah: ${gempa.wilayah}
+Potensi: ${gempa.potensi}
+      `;
+      await ctx.replyWithPhoto({ url: gempa.shakemap }, { caption: caption });
+    } else {
+      ctx.reply("⚠️ Gagal mendapatkan informasi gempa. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error infogempa:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mencari informasi gempa.");
+  }
+});
+
+bot.command("screenshot", async (ctx) => {
+  const url = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!url) {
+    return ctx.reply("❌ Contoh: /screenshot https://google.com");
+  }
+
+  try {
+    await ctx.reply("Sedang mengambil screenshot...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/screenshot?url=${encodeURIComponent(url)}`;
+    const res = await axios.get(apiUrl, { timeout: 60000 });
+    const data = res.data;
+
+    if (data.fileUrl) {
+      await ctx.replyWithPhoto({ url: data.fileUrl }, { caption: `✅ Screenshot dari ${url}` });
+    } else {
+      ctx.reply("⚠️ Gagal mengambil screenshot. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error screenshot:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mengambil screenshot.");
+  }
+});
+
+bot.command("aio", async (ctx) => {
+  const url = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!url) {
+    return ctx.reply("❌ Contoh: /aio <url>");
+  }
+
+  try {
+    await ctx.reply("Sedang mengunduh...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/aio?url=${encodeURIComponent(url)}`;
+    const res = await axios.get(apiUrl, { timeout: 60000 });
+    const data = res.data;
+
+    if (data.success && data.data && data.data.download_links && data.data.download_links.length > 0) {
+      const downloadUrl = data.data.download_links[0];
+      // Try to send as video first, as it's the most common case for AIO downloaders
+      await ctx.replyWithVideo({ url: downloadUrl }, { caption: "✅ Berhasil diunduh!" });
+    } else {
+      ctx.reply("⚠️ Gagal mengunduh media. Pastikan URL valid dan coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error aio:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mengunduh.");
+  }
+});
+
+bot.command("instagram", async (ctx) => {
+  const url = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!url) {
+    return ctx.reply("❌ Contoh: /instagram <url_instagram>");
+  }
+
+  try {
+    await ctx.reply("Sedang mengunduh dari Instagram...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/instagram?url=${encodeURIComponent(url)}`;
+    const res = await axios.get(apiUrl, { timeout: 60000 });
+    const data = res.data;
+
+    if (data.status && data.result && data.result.length > 0 && data.result[0].url_download) {
+      const downloadUrl = data.result[0].url_download;
+      // Using replyWithVideo as it can handle both video and images from URL
+      await ctx.replyWithVideo({ url: downloadUrl }, { caption: "✅ Berhasil diunduh dari Instagram!" });
+    } else {
+      ctx.reply("⚠️ Gagal mengunduh media dari Instagram. Pastikan URL valid dan coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error instagram:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mengunduh dari Instagram.");
+  }
+});
+
+bot.command("tiktoksearch", async (ctx) => {
+  const query = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!query) {
+    return ctx.reply("❌ Contoh: /tiktoksearch jj ml");
+  }
+
+  try {
+    await ctx.reply("Sedang mencari video di TikTok...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/tiktok-search?query=${encodeURIComponent(query)}`;
+    const res = await axios.get(apiUrl, { timeout: 60000 });
+    const data = res.data;
+
+    if (data.status === 200 && data.video_url) {
+      await ctx.replyWithVideo({ url: data.video_url }, { caption: data.title || "✅ Video ditemukan!" });
+    } else {
+      ctx.reply("⚠️ Gagal mencari video. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error tiktoksearch:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mencari video.");
+  }
+});
+
+bot.command("pinterest", async (ctx) => {
+  const query = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!query) {
+    return ctx.reply("❌ Contoh: /pinterest elaina");
+  }
+
+  try {
+    await ctx.reply("Sedang mencari gambar di Pinterest...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/pinterest?q=${encodeURIComponent(query)}`;
+    const res = await axios.get(apiUrl, { timeout: 30000 });
+    const data = res.data;
+
+    if (data.status && data.results && data.results.length > 0) {
+      const randomIndex = Math.floor(Math.random() * data.results.length);
+      const imageUrl = data.results[randomIndex];
+      await ctx.replyWithPhoto({ url: imageUrl }, { caption: `✅ Gambar dari Pinterest untuk: ${query}` });
+    } else {
+      ctx.reply("⚠️ Gagal mencari gambar. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error pinterest:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mencari gambar.");
+  }
+});
+
+bot.command("jadwalsholat", async (ctx) => {
+  const kota = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!kota) {
+    return ctx.reply("❌ Contoh: /jadwalsholat Jakarta");
+  }
+
+  try {
+    await ctx.reply("Sedang mencari jadwal sholat...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/jadwal-sholat?kota=${encodeURIComponent(kota)}`;
+    const res = await axios.get(apiUrl, { timeout: 30000 });
+    const data = res.data;
+
+    if (data.status && data.jadwal) {
+      const jadwal = data.jadwal;
+      const caption = `
+Jadwal Sholat untuk ${data.lokasi}
+Tanggal: ${jadwal.tanggal}
+
+Imsak: ${jadwal.imsak}
+Subuh: ${jadwal.subuh}
+Terbit: ${jadwal.terbit}
+Dhuha: ${jadwal.dhuha}
+Dzuhur: ${jadwal.dzuhur}
+Ashar: ${jadwal.ashar}
+Maghrib: ${jadwal.maghrib}
+Isya: ${jadwal.isya}
+      `;
+      await ctx.reply(caption);
+    } else {
+      ctx.reply("⚠️ Gagal mendapatkan jadwal sholat. Pastikan nama kota benar.");
+    }
+  } catch (err) {
+    console.error("❌ Error jadwalsholat:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mencari jadwal sholat.");
+  }
+});
+
+const spotifySearchResults = new Map();
+
+bot.command("spotify", async (ctx) => {
+  const query = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!query) {
+    return ctx.reply("❌ Contoh: /spotify rumah ke rumah");
+  }
+
+  try {
+    await ctx.reply("Sedang mencari lagu di Spotify...");
+
+    const searchUrl = `https://alfixd-api.koyeb.app/spotify-search?query=${encodeURIComponent(query)}`;
+    const res = await axios.get(searchUrl, { timeout: 30000 });
+    const data = res.data;
+
+    if (data.status && data.result && data.result.length > 0) {
+      const userId = ctx.from.id;
+      spotifySearchResults.set(userId, { list: data.result, page: 0 });
+      await sendSpotifySearchResult(ctx, userId, 0);
+    } else {
+      ctx.reply("⚠️ Lagu tidak ditemukan. Coba kata kunci lain.");
+    }
+  } catch (err) {
+    console.error("❌ Error spotify search:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mencari lagu.");
+  }
+});
+
+async function sendSpotifySearchResult(ctx, userId, page) {
+  const store = spotifySearchResults.get(userId);
+  if (!store) return ctx.reply("❌ Data pencarian tidak ditemukan.");
+  const { list } = store;
+  if (page < 0 || page >= list.length) return;
+
+  const song = list[page];
+
+  const keyboard = Markup.inlineKeyboard([
+    [Markup.button.callback("🎵 Download", `spotifydl:${page}`)],
+    [
+      ...(page > 0 ? [Markup.button.callback("⬅️ Prev", `spotifyprev:${page - 1}`)] : []),
+      ...(page < list.length - 1 ? [Markup.button.callback("➡️ Next", `spotifynext:${page + 1}`)] : []),
+    ],
+  ]);
+
+  const caption = `
+*Title:* ${song.title}
+*Artists:* ${song.artists}
+*Duration:* ${Math.floor(song.duration_ms / 60000)}m ${Math.floor((song.duration_ms % 60000) / 1000)}s
+
+_${page + 1} dari ${list.length}_
+  `;
+
+  try {
+    if (song.image) {
+      await ctx.replyWithPhoto({ url: song.image }, { caption, parse_mode: "Markdown", ...keyboard });
+    } else {
+      await ctx.reply(caption, { parse_mode: "Markdown", ...keyboard });
+    }
+  } catch (e) {
+    await ctx.reply(caption, { parse_mode: "Markdown", ...keyboard });
+  }
+}
+
+bot.action(/spotifynext:(\\d+)/, async (ctx) => {
+  try {
+    const page = parseInt(ctx.match[1], 10);
+    const store = spotifySearchResults.get(ctx.from.id);
+    if (!store) return ctx.answerCbQuery("Data tidak ada.");
+    store.page = page;
+    await sendSpotifySearchResult(ctx, ctx.from.id, page);
+    await ctx.answerCbQuery();
+  } catch {}
+});
+
+bot.action(/spotifyprev:(\\d+)/, async (ctx) => {
+  try {
+    const page = parseInt(ctx.match[1], 10);
+    const store = spotifySearchResults.get(ctx.from.id);
+    if (!store) return ctx.answerCbQuery("Data tidak ada.");
+    store.page = page;
+    await sendSpotifySearchResult(ctx, ctx.from.id, page);
+    await ctx.answerCbQuery();
+  } catch {}
+});
+
+bot.action(/spotifydl:(\\d+)/, async (ctx) => {
+  try {
+    const page = parseInt(ctx.match[1], 10);
+    const song = spotifySearchResults.get(ctx.from.id)?.list?.[page];
+    if (!song) return ctx.reply("❌ Data lagu tidak ditemukan.");
+
+    await ctx.reply("🎵 Sedang menyiapkan file MP3...");
+
+    const apiUrl = `https://alfixd-api.koyeb.app/spotifydl?url=${encodeURIComponent(song.link)}`;
+    const { data } = await axios.get(apiUrl);
+
+    if (data.status && data.result && data.result.download) {
+      await ctx.replyWithAudio(
+        { url: data.result.download },
+        {
+          title: data.result.title || song.title,
+          performer: data.result.artist || song.artists,
+          thumb: { url: data.result.image || song.image },
+        }
+      );
+    } else {
+      ctx.reply("❌ Gagal mengunduh lagu.");
+    }
+  } catch (err) {
+    console.error("❌ Error spotifydl:", err?.response?.data || err?.message || err);
+    ctx.reply("⚠️ Error saat mengunduh lagu.");
   }
 });
 
@@ -1503,8 +1993,12 @@ bot.command("mute", async (ctx) => {
     }
   } catch (e) {
     console.error("Mute gagal:", e.message);
-    ctx.reply("⚠️ Gagal mute user (bot harus admin dengan izin restrict).");
+    ctx.reply("⚠️ Gagal mute user (mungkin bot bukan admin / tidak punya izin).");
   }
+});
+
+bot.catch((err, ctx) => {
+  console.error(chalk.red(`❌ Ooops, encountered an error for ${ctx.updateType}`), err);
 });
 
 // ==== UNMUTE USER ====
@@ -1662,7 +2156,6 @@ bot.on("message", async (ctx, next) => {
   }
 });
 
-// ==== TIKTOK DOWNLOADER ====
 bot.command("ttdown", async (ctx) => {
   const text = ctx.message.text.split(" ").slice(1).join(" ");
   if (!text) {
@@ -1670,46 +2163,49 @@ bot.command("ttdown", async (ctx) => {
   }
 
   try {
-    const res = await axios.get(
-      `https://api.zenzxz.my.id/downloader/tiktok?url=${encodeURIComponent(text)}`
-    );
+    await ctx.reply("Sedang mengunduh dari TikTok...");
 
-    const down = res.data?.result?.data;
-    if (!down || !down.play) {
-      return ctx.reply("⚠️ Gagal mengambil data TikTok. Coba link lain.");
-    }
+    const apiUrl = `https://alfixd-api.koyeb.app/tiktok?url=${encodeURIComponent(text)}`;
+    const res = await axios.get(apiUrl, { timeout: 60000 });
+    const data = res.data;
 
-    // kirim video
-    await ctx.replyWithVideo(
-      { url: down.play },
-      {
-        caption: `
-┏╼━━━「  𝗧𝗶𝗸𝗧𝗼𝗸 𝗗𝗼𝘄𝗻 🍁 」━━━━━━━╾┓
-╎📌 Judul: ${down.title || "-"}
-╎⏳ Durasi: ${down.duration || "-"} detik
-╎👤 Author: ${down.author || "-"}
-╎❤️ Likes: ${down.digg_count || "-"} | 👁️ Views: ${down.play_count || "-"}
-┗╼━━━━━━━━━━━━━━━━━━╾┛
-        `,
-        parse_mode: "Markdown"
+    if (data.status && data.data) {
+      const mediaData = data.data;
+      let sent = false;
+
+      // Handle videos
+      const noWatermarkVideo = mediaData.find(item => item.type === "nowatermark_hd") || mediaData.find(item => item.type === "nowatermark");
+      if (noWatermarkVideo && noWatermarkVideo.url) {
+        await ctx.replyWithVideo({ url: noWatermarkVideo.url }, { caption: data.title || "✅ Video TikTok berhasil diunduh!" });
+        sent = true;
       }
-    );
 
-    // cek kalau ada musik
-    const audioUrl = down.music || down.music_info?.play || null;
-    if (audioUrl) {
-      await ctx.replyWithAudio(
-        { url: audioUrl },
-        {
-          title: down.music_info?.title || "TikTok Sound",
-          performer: down.music_info?.author || "Unknown"
+      // Handle slides/photos
+      const photos = mediaData.filter(item => item.type === "photo" && item.url);
+      if (photos.length > 0) {
+        // Send photos one by one
+        for (const photo of photos) {
+          await ctx.replyWithPhoto({ url: photo.url });
         }
-      );
-    }
+        await ctx.reply(data.title || "✅ Slide TikTok berhasil diunduh!");
+        sent = true;
+      }
+      
+      // Handle music
+      if (data.music_info && data.music_info.url) {
+          await ctx.replyWithAudio({ url: data.music_info.url }, { title: data.music_info.title, performer: data.music_info.author });
+      }
 
-  } catch (e) {
-    console.error("TTDOWN error:", e);
-    await ctx.reply("⚠️ Error ambil data TikTok. Coba ulangi lagi nanti.");
+      if (!sent) {
+        ctx.reply("⚠️ Tidak ada media tanpa watermark yang ditemukan.");
+      }
+
+    } else {
+      ctx.reply("⚠️ Gagal mengunduh media dari TikTok. Pastikan URL valid dan coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("❌ Error ttdown:", err?.response?.data || err?.message || err);
+    ctx.reply("Ups! Terjadi kesalahan saat mengunduh dari TikTok.");
   }
 });
 
@@ -2122,301 +2618,11 @@ const jembut = galau[Math.floor(Math.random() * galau.length)];
   await ctx.reply(`🍁 ${jembut}`);
 });
 
-const spotifyCache = new Map();
 
-bot.command("spotifysearch", async (ctx) => {
-  try {
-    const query = ctx.message.text.split(" ").slice(1).join(" ");
-    if (!query) {
-      return ctx.reply("❌ Salah input!\nContoh: /spotifysearch alan walker faded");
-    }
-    const res = await axios.get(
-      `https://api.siputzx.my.id/api/s/spotify?query=${encodeURIComponent(query)}`
-    );
-    let data = res.data;
-    if (data.data) data = data.data;
-    if (typeof data === "string") data = JSON.parse(data);
-    if (!Array.isArray(data) || data.length === 0) {
-      return ctx.reply("⚠️ Tidak ada hasil ditemukan. Coba kata kunci lain.");
-    }
 
-    // Simpan hasil di cache per user
-    spotifyCache.set(ctx.from.id, { results: data, index: 0 });
-    await sendSpotifyResult(ctx, data[0], 0);
-  } catch (err) {
-    console.error("Spotify Search Error:", err.message);
-    return ctx.reply("❌ Terjadi kesalahan saat mencari lagu.");
-  }
-});
 
-// Fungsi kirim hasil Spotify
-async function sendSpotifyResult(ctx, item, index) {
-  const thumbnail = item.thumbnail || "https://i.ibb.co/qpZ1X7t/spotify-default.png";
 
-  const caption = `
-┏╼━「  𝗦𝗽𝗼𝘁𝗶𝗳𝘆 𝗦𝗲𝗮𝗿𝗰𝗵 🍁 」━━━━━━╾┓
-╎🎵 *${item.title || "Unknown"}*
-╎👤 Artist: ${item.artist || "-"}
-╎💿 Album: ${item.album || "-"}
-╎📅 Rilis: ${item.release_date || "-"}
-╎⏱ Durasi: ${item.duration || "-"}
-╎🔗 [Spotify Link](${item.track_url})
-┗╼━━━━━━━━━━━━━━━━━━━━━━╾┛
-  `;
 
-  await ctx.replyWithPhoto(
-    { url: thumbnail },
-    {
-      caption,
-      parse_mode: "Markdown",
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "⬇️ Download", callback_data: `spotifydl_${index}` },
-            { text: "⏭ Lagu Selanjutnya", callback_data: `spotifynext_${index + 1}` }
-          ]
-        ]
-      }
-    }
-  );
-}
-
-// Handle tombol Download
-bot.on("callback_query", async (ctx) => {
-  try {
-    const data = ctx.callbackQuery.data;
-    const userId = ctx.from.id;
-    if (!spotifyCache.has(userId)) {
-      return ctx.answerCbQuery("❌ Tidak ada data pencarian aktif.");
-    }
-
-    const { results } = spotifyCache.get(userId);
-
-    // Download
-  if (data.startsWith("spotifydl_")) {
-  const index = parseInt(data.split("_")[1]);
-  const item = results[index];
-  await ctx.answerCbQuery("⬇️ Sedang mendownload...");
-  const dl = await axios.get(
-    `https://api.siputzx.my.id/api/d/spotify?url=${encodeURIComponent(item.track_url)}`
-  );
-  console.log("DEBUG Spotify DL:", dl.data);
-  if (!dl.data || !dl.data.data || !dl.data.data.download) {
-    return ctx.reply("❌ Gagal mengambil link download dari API.");
-  }
-  
-  const song = dl.data.data;
-  return ctx.replyWithAudio(
-    { url: song.download },
-    {
-      title: song.title,
-      performer: song.artis || item.artist,
-      thumb: { url: song.image }, // kasih thumbnail album
-    }
-  );
-}
-
-    // Next Lagu
-    if (data.startsWith("spotifynext_")) {
-      const index = parseInt(data.split("_")[1]);
-      if (index >= results.length) {
-        return ctx.answerCbQuery("⚠️ Tidak ada lagu selanjutnya.");
-      }
-      spotifyCache.set(userId, { results, index });
-      await ctx.deleteMessage();
-      await sendSpotifyResult(ctx, results[index], index);
-    }
-  } catch (err) {
-    console.error("Callback Error:", err.message);
-    return ctx.reply("❌ Terjadi kesalahan saat memproses permintaan.");
-  }
-});
-
-// ================= ASAH OTAK =================
-bot.command("asahotak", async (ctx) => {
-  try {
-    const res = await axios.get("https://api.siputzx.my.id/api/games/asahotak");
-    const d = res.data;
-
-    // Debug biar tau struktur API
-    console.log("DEBUG ASAH OTAK:", JSON.stringify(d, null, 2));
-
-    const soal =
-      d.soal || d.question || d.result?.soal || d.data?.soal || "Soal tidak tersedia";
-    const jawaban =
-      d.jawaban || d.answer || d.result?.jawaban || d.data?.jawaban || null;
-
-    if (!ctx.session) ctx.session = {};
-    ctx.session.answer_asahotak = jawaban ? jawaban.toLowerCase() : "jawaban tidak tersedia";
-
-    await ctx.reply(`🧠 Pertanyaan Asah Otak:\n${soal}\n\nKetik jawabanmu dengan /jawabasahotak <tebakan>`);
-  } catch (e) {
-    console.error("Error asahotak:", e.message);
-    await ctx.reply("❌ Terjadi error saat mengambil soal Asah Otak.");
-  }
-});
-
-bot.command("jawabasahotak", async (ctx) => {
-  if (!ctx.session || !ctx.session.answer_asahotak) {
-    return ctx.reply("❌ Tidak ada soal aktif. Jalankan /asahotak dulu.");
-  }
-
-  const userAnswer = ctx.message.text.split(" ").slice(1).join(" ").toLowerCase();
-  if (userAnswer === ctx.session.answer_asahotak) {
-    await ctx.reply("✅ Benar! 🎉 Jawaban kamu tepat.");
-  } else {
-    await ctx.reply(`❌ Salah.\nJawaban yang benar: ${ctx.session.answer_asahotak}`);
-  }
-});
-
-// ================= CAK LONTONG =================
-bot.command("caklontong", async (ctx) => {
-  try {
-    const res = await axios.get("https://api.siputzx.my.id/api/games/caklontong");
-    const d = res.data;
-
-    console.log("DEBUG CAK LONTONG:", JSON.stringify(d, null, 2));
-
-    const soal = d.data?.soal || d.soal || "Soal tidak tersedia";
-    const jawaban = d.data?.jawaban || d.jawaban || null;
-    const alasan = d.data?.deskripsi || d.deskripsi || "alasan tidak tersedia";
-
-    if (!ctx.session) ctx.session = {};
-    ctx.session.answer_caklontong = jawaban ? jawaban.toLowerCase() : "jawaban tidak tersedia";
-    ctx.session.reason_caklontong = alasan;
-
-    await ctx.reply(`🤣 Pertanyaan Cak Lontong:\n${soal}\n\nKetik jawabanmu dengan /jawabcaklontong <tebakan>`);
-  } catch (e) {
-    console.error("Error caklontong:", e.message);
-    await ctx.reply("❌ Terjadi error saat mengambil soal Cak Lontong.");
-  }
-});
-
-bot.command("jawabcaklontong", async (ctx) => {
-  if (!ctx.session || !ctx.session.answer_caklontong) {
-    return ctx.reply("❌ Tidak ada soal aktif. Jalankan /caklontong dulu.");
-  }
-
-  const userAnswer = ctx.message.text.split(" ").slice(1).join(" ").toLowerCase();
-  if (userAnswer === ctx.session.answer_caklontong) {
-    await ctx.reply(`✅ Benar! 🎉\nJawaban: ${ctx.session.answer_caklontong}\n💡 ${ctx.session.reason_caklontong}`);
-  } else {
-    await ctx.reply(`❌ Salah.\nJawaban: ${ctx.session.answer_caklontong}\n💡 ${ctx.session.reason_caklontong}`);
-  }
-});
-
-bot.command("tebaklirik", async (ctx) => {
-  try {
-    const res = await axios.get("https://api.siputzx.my.id/api/games/tebaklirik");
-    const d = res.data;
-
-    console.log("DEBUG TEBAK LIRIK:", JSON.stringify(d, null, 2));
-
-    const soal = d.data?.soal || d.soal || "Lirik tidak tersedia";
-    const jawaban = d.data?.jawaban || d.jawaban || null;
-
-    if (!ctx.session) ctx.session = {};
-    ctx.session.answer_tebaklirik = jawaban ? jawaban.toLowerCase() : "jawaban tidak tersedia";
-
-    await ctx.reply(`🎶 Tebak Lirik:\n${soal}\n\nKetik jawabanmu dengan /jawabtebaklirik <tebakan>`);
-  } catch (e) {
-    console.error("Error tebaklirik:", e.message);
-    await ctx.reply("❌ Terjadi error saat mengambil soal Tebak Lirik.");
-  }
-});
-
-// ======== Tebak Lagu ========
-bot.command("tebaklagu", async (ctx) => {
-  try {
-    const res = await axios.get("https://api.siputzx.my.id/api/games/tebaklagu");
-    const data = res.data?.data;
-
-    if (!data || !data.lagu) {
-      return ctx.reply("❌ Lagu tidak tersedia, coba lagi.");
-    }
-
-    // pastikan ctx.session ada
-    if (!ctx.session) ctx.session = {};
-
-    ctx.session.answer_tebaklagu = data.judul ? data.judul.toLowerCase() : null;
-    ctx.session.artist_tebaklagu = data.artis || null;
-
-    await ctx.replyWithAudio(
-      { url: data.lagu },
-      { caption: `🎶 Tebak Lagu:\nDengarkan potongan lagu ini.\n\nKetik jawabanmu dengan:\n/jawabtebaklagu <judul>` }
-    );
-
-  } catch (e) {
-    console.error("Error Tebak Lagu:", e);
-    ctx.reply("❌ Terjadi error saat mengambil soal Tebak Lagu.");
-  }
-});
-
-// ======== Jawab Tebak Lagu ========
-bot.command("jawabtebaklagu", (ctx) => {
-  const userAnswer = ctx.message.text.split(" ").slice(1).join(" ").toLowerCase();
-
-  // pastikan ctx.session ada
-  if (!ctx.session) ctx.session = {};
-
-  if (!ctx.session.answer_tebaklagu) {
-    return ctx.reply("⚠️ Tidak ada permainan Tebak Lagu yang aktif. Ketik /tebaklagu dulu.");
-  }
-
-  if (userAnswer === ctx.session.answer_tebaklagu) {
-    ctx.reply(`✅ Benar! Judul lagunya adalah *${ctx.session.answer_tebaklagu}* oleh *${ctx.session.artist_tebaklagu}*`);
-  } else {
-    ctx.reply(`❌ Salah.\nJawaban: *${ctx.session.answer_tebaklagu}*\n🎤 Penyanyi: *${ctx.session.artist_tebaklagu}*`);
-  }
-
-  // reset session
-  ctx.session.answer_tebaklagu = null;
-  ctx.session.artist_tebaklagu = null;
-});
-
-// ==== COMMAND ZODIAK ====
-bot.command("zodiak", async (ctx) => {
-  const text = ctx.message.text.split(" ").slice(1).join(" ");
-  if (!text) {
-    return ctx.reply("❌ Contoh: /zodiak scorpio");
-  }
-
-  try {
-    // Panggil API siputzx
-    const res = await axios.get(
-      `https://api.siputzx.my.id/api/primbon/zodiak?zodiak=${encodeURIComponent(text)}`
-    );
-
-    const d = res.data;
-
-    // cek validasi response
-    if (!d || d.status !== true || !d.data) {
-      return ctx.reply("⚠️ Data zodiak tidak ditemukan.");
-    }
-
-    const z = d.data;
-
-    // format pesan
-    let msg = `♈ <b>Ramalan Zodiak</b>\n\n`;
-    msg += `🔮 <b>Zodiak:</b> ${z.zodiak || text}\n`;
-    msg += `🎲 <b>Nomor Keberuntungan:</b> ${z.nomor_keberuntungan || "-"}\n`;
-    msg += `🌺 <b>Bunga:</b> ${z.bunga_keberuntungan || "-"}\n`;
-    msg += `🎨 <b>Warna:</b> ${z.warna_keberuntungan || "-"}\n`;
-    msg += `💎 <b>Batu:</b> ${z.batu_keberuntungan || "-"}\n`;
-    msg += `💫 <b>Planet:</b> ${z.planet_yang_mengitari || "-"}\n`;
-    msg += `💧 <b>Elemen:</b> ${z.elemen_keberuntungan || "-"}\n`;
-    msg += `❤️ <b>Pasangan Cocok:</b> ${z.pasangan_zodiak || "-"}\n\n`;
-
-    if (z.asmarah) {
-      msg += `💌 <b>Asmara:</b> ${z.asmarah}\n`;
-    }
-
-    await ctx.reply(msg, { parse_mode: "HTML" });
-  } catch (e) {
-    console.error("❌ Zodiak Error:", e.response?.status, e.response?.data || e.message);
-    ctx.reply("⚠️ API zodiak error atau sedang down.");
-  }
-});
 
 // ==== COMMAND CEKGANTENG ====
 bot.command("cekganteng", (ctx) => {
@@ -2550,118 +2756,12 @@ bot.command("tourl", async (ctx) => {
   }
 });
 
-// ==== ARTINAMA ====
-bot.command("artinama", async (ctx) => {
-  const text = ctx.message.text.split(" ").slice(1).join(" ");
-  if (!text) return ctx.reply("❌ Contoh: /artinama Alfi");
 
-  try {
-    const res = await axios.get(`https://api.siputzx.my.id/api/primbon/artinama?nama=${encodeURIComponent(text)}`);
-    const data = res.data;
 
-    if (!data || !data.status || !data.data) {
-      return ctx.reply("⚠️ Gagal mengambil arti nama. Coba lagi nanti.");
-    }
 
-    const { nama, arti } = data.data;
-    const message = `📛 *Arti Nama: ${nama}*\n\n${arti}`;
 
-    await ctx.reply(message, { parse_mode: "Markdown" });
-  } catch (e) {
-    console.error("Artinama Error:", e.message);
-    ctx.reply("⚠️ Terjadi kesalahan saat mengambil arti nama.");
-  }
-});
 
-// ==== COMMAND KECOCOKAN NAMA PASANGAN ====
-bot.command("kecocokan", async (ctx) => {
-  const args = ctx.message.text.split(" ").slice(1);
-  if (args.length < 2) {
-    return ctx.reply("❌ Contoh: /kecocokan alfi yuzuriha");
-  }
 
-  const nama1 = args[0];
-  const nama2 = args[1];
-
-  try {
-    const res = await axios.get(
-      `https://api.siputzx.my.id/api/primbon/kecocokan_nama_pasangan?nama1=${encodeURIComponent(nama1)}&nama2=${encodeURIComponent(nama2)}`
-    );
-
-    const data = res.data?.data;
-    if (!data) return ctx.reply("⚠️ Gagal mendapatkan hasil dari API.");
-
-    const caption = `
-💞 *Hasil Kecocokan Nama Pasangan* 💞
-
-👤 Nama Anda: *${data.nama_anda}*
-👤 Nama Pasangan: *${data.nama_pasangan}*
-
-✅ *Sisi Positif:*
-${data.sisi_posistif || data.sisi_positif}
-
-⚠️ *Sisi Negatif:*
-${data.sisi_negatif}
-
-📝 *Catatan:*
-${data.catatan}
-    `;
-
-    if (data.gambar) {
-      await ctx.replyWithPhoto({ url: data.gambar }, { caption, parse_mode: "Markdown" });
-    } else {
-      await ctx.reply(caption, { parse_mode: "Markdown" });
-    }
-  } catch (e) {
-    console.error("❌ Error kecocokan:", e.message);
-    ctx.reply("⚠️ Error mengambil data dari API.");
-  }
-});
-
-// ==== COMMAND /tafsirmimpi ====
-bot.command("tafsirmimpi", async (ctx) => {
-  const text = ctx.message.text.split(" ").slice(1).join(" ");
-  if (!text) return ctx.reply("❌ Contoh: /tafsirmimpi bertemu setan");
-
-  try {
-    const url = `https://api.siputzx.my.id/api/primbon/tafsirmimpi?mimpi=${encodeURIComponent(text)}`;
-    const res = await axios.get(url);
-
-    if (!res.data || !res.data.status) {
-      return ctx.reply("⚠️ Tafsir mimpi tidak ditemukan.");
-    }
-
-    const keyword = res.data.data?.keyword || "-";
-    const solusi = res.data.data?.solusi || "Tidak ada solusi.";
-
-    const hasil = `🌙 *Tafsir Mimpi*\n\n🔑 Keyword: *${keyword}*\n📌 Solusi: ${solusi}`;
-    await ctx.reply(hasil, { parse_mode: "Markdown" });
-  } catch (e) {
-    console.error("TafsirMimpi Error:", e.message);
-    ctx.reply("⚠️ Gagal mengambil tafsir mimpi, coba lagi nanti.");
-  }
-});
-
-// DECODE BASE 64
-
-bot.command("decodebase64", async (ctx) => {
-  const text = ctx.message.text.split(" ").slice(1).join(" ");
-  if (!text) return ctx.reply("❌ Contoh: /decodebase64 SGVsY2hpbmE=");
-
-  try {
-    const apiUrl = `https://api.siputzx.my.id/api/tools/base642text?base64=${encodeURIComponent(text)}`;
-    const { data } = await axios.get(apiUrl);
-
-    if (data.status) {
-      ctx.reply(`Decoded Text: ${data.data.text}`);
-    } else {
-      ctx.reply("❌ Gagal mendecode Base64.");
-    }
-  } catch (err) {
-    console.error("❌ Error decodebase64:", err.message);
-    ctx.reply("⚠️ Terjadi kesalahan saat mendecode Base64.");
-  }
-});
 
 bot.action(/.*/, async (ctx) => {
   await ctx.answerCbQuery();
