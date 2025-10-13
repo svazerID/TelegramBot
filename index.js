@@ -515,7 +515,7 @@ Hi ${username} I'm a Telegram Bot that can help you with various tasks.
 <b>│々 /ytmp4 </b>
 <b>│々 /play </b>
 <b>│々 /spotify </b>
-<b>│々 /ttdown </b>
+<b>│々 /tiktok </b>
 <b>│々 /aio </b>
 <b>│々 /instagram </b>
 <b>│々 /tiktoksearch </b>
@@ -2324,10 +2324,10 @@ bot.on("message", async (ctx, next) => {
   }
 });
 
-bot.command("ttdown", async (ctx) => {
+bot.command("tiktok", async (ctx) => {
   const text = ctx.message.text.split(" ").slice(1).join(" ");
   if (!text) {
-    return ctx.reply(`❌ Salah input!\nContoh: /ttdown https://vt.tiktok.com/xxxx/`);
+    return ctx.reply(`❌ Salah input!\nContoh: /tiktok https://vt.tiktok.com/xxxx/`);
   }
 
   try {
@@ -2372,7 +2372,7 @@ bot.command("ttdown", async (ctx) => {
       ctx.reply("⚠️ Gagal mengunduh media dari TikTok. Pastikan URL valid dan coba lagi nanti.");
     }
   } catch (err) {
-    console.error("❌ Error ttdown:", err?.response?.data || err?.message || err);
+    console.error("❌ Error tiktok:", err?.response?.data || err?.message || err);
     ctx.reply("Ups! Terjadi kesalahan saat mengunduh dari TikTok.");
   }
 });
