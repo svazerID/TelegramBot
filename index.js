@@ -5,6 +5,7 @@
                 * yuzuriha ( # GIRLFRIEND )
  */
 const { Telegraf, Markup, session } = require("telegraf");
+
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
@@ -15,12 +16,34 @@ const chalk = new (require('chalk').Chalk)();
 
 // Load dari setting.js
 const BOT_TOKEN = setting.BOT_TOKEN;
+const QWEN_API_KEY = setting.QWEN_API_KEY;
+const QWEN_BASE_URL = setting.QWEN_BASE_URL;
 if (!BOT_TOKEN) {
   console.error("❌ BOT_TOKEN belum diisi di setting.js");
   process.exit(1);
 }
 
 const bot = new Telegraf(BOT_TOKEN);
+
+bot.use((ctx, next) => {
+  // Log incoming messages
+  if (ctx.message && ctx.message.text) {
+    const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+    console.log(`[${timestamp}] User ${ctx.from.id}: ${ctx.message.text}`);
+  }
+
+  // Wrap reply to log outgoing messages
+  const originalReply = ctx.reply;
+  ctx.reply = (...args) => {
+    const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+    if (typeof args[0] === 'string') {
+      console.log(`[${timestamp}] Bot: ${args[0]}`);
+    }
+    return originalReply.apply(ctx, args);
+  };
+
+  return next();
+});
 
 // ==== FILE STORAGE ====
 const adminFile = path.join(__dirname, "./database/admin.json");
@@ -187,6 +210,10 @@ function useLimit(userId) {
 // Simpan hasil pencarian per user
 // key: userId -> { list: NormalizedVideo[], page: number }
 const searchResults = new Map();
+
+// Simpan histori chat Gemini per user
+// key: userId -> { history: { role: 'user' | 'model', parts: { text: string } }[] }
+const geminiChatHistory = new Map();
 
 // Util: normalisasi item dari API search agar field konsisten
 function normalizeSearchItem(it = {}) {
@@ -542,6 +569,7 @@ bot.action('aimenu', async (ctx) => {
 <b>│▢ /claude</b>
 <b>│▢ /genimage</b>
 <b>│▢ /gemini</b>
+<b>│▢ /gemini_reset</b>
 <b>┗───────────────────ⓘ</b>
 
 </blockquote>
@@ -1253,7 +1281,23 @@ bot.command("gemini", async (ctx) => {
   try {
     await ctx.reply("Sedang berkomunikasi dengan Gemini...");
 
-    let apiUrl = `https://alfixd-api.koyeb.app/gemini?prompt=${encodeURIComponent(prompt)}`;
+    const userId = ctx.from.id;
+    if (!geminiChatHistory.has(userId)) {
+      geminiChatHistory.set(userId, { history: [] });
+    }
+    const userData = geminiChatHistory.get(userId);
+
+    // Add current user prompt to history
+    userData.history.push({ role: "user", parts: [{ text: prompt }] });
+
+    // Construct the full prompt with history
+    let fullPrompt = userData.history.map(entry => {
+      if (entry.role === "user") return `User: ${entry.parts[0].text}`;
+      if (entry.role === "model") return `Gemini: ${entry.parts[0].text}`;
+      return "";
+    }).join("\n");
+
+    let apiUrl = `https://alfixd-api.koyeb.app/gemini?prompt=${encodeURIComponent(fullPrompt)}`;
 
     if (ctx.message.reply_to_message && ctx.message.reply_to_message.photo) {
       const photoArr = ctx.message.reply_to_message.photo;
@@ -1267,6 +1311,9 @@ bot.command("gemini", async (ctx) => {
     const data = res.data;
 
     if (data.status && data.result) {
+      // Add Gemini's response to history
+      userData.history.push({ role: "model", parts: [{ text: data.result }] });
+      geminiChatHistory.set(userId, userData);
       await ctx.reply(data.result);
     } else {
       ctx.reply("⚠️ Gagal mendapatkan respon dari Gemini. Coba lagi nanti.");
@@ -1274,6 +1321,16 @@ bot.command("gemini", async (ctx) => {
   } catch (err) {
     console.error("❌ Error Gemini:", err?.response?.data || err?.message || err);
     ctx.reply("Ups! Terjadi kesalahan saat berkomunikasi dengan Gemini.");
+  }
+});
+
+bot.command("gemini_reset", (ctx) => {
+  const userId = ctx.from.id;
+  if (geminiChatHistory.has(userId)) {
+    geminiChatHistory.delete(userId);
+    ctx.reply("✅ Riwayat obrolan Gemini telah direset.");
+  } else {
+    ctx.reply("⚠️ Tidak ada riwayat obrolan Gemini untuk direset.");
   }
 });
 
@@ -1617,7 +1674,7 @@ _${page + 1} dari ${list.length}_
   }
 }
 
-bot.action(/spotifynext:(\\d+)/, async (ctx) => {
+bot.action(/^spotifynext:(\d+)$/, async (ctx) => {
   try {
     const page = parseInt(ctx.match[1], 10);
     const store = spotifySearchResults.get(ctx.from.id);
@@ -1628,7 +1685,7 @@ bot.action(/spotifynext:(\\d+)/, async (ctx) => {
   } catch {}
 });
 
-bot.action(/spotifyprev:(\\d+)/, async (ctx) => {
+bot.action(/^spotifyprev:(\d+)$/, async (ctx) => {
   try {
     const page = parseInt(ctx.match[1], 10);
     const store = spotifySearchResults.get(ctx.from.id);
@@ -1639,7 +1696,7 @@ bot.action(/spotifyprev:(\\d+)/, async (ctx) => {
   } catch {}
 });
 
-bot.action(/spotifydl:(\\d+)/, async (ctx) => {
+bot.action(/^spotifydl:(\d+)$/, async (ctx) => {
   try {
     const page = parseInt(ctx.match[1], 10);
     const song = spotifySearchResults.get(ctx.from.id)?.list?.[page];
@@ -1877,12 +1934,23 @@ bot.command("promote", async (ctx) => {
   if (ctx.message.reply_to_message) {
     targetId = ctx.message.reply_to_message.from.id;
   } else if (args[0]) {
+    if (args[0].startsWith('@')) {
+        return ctx.reply("❌ Mention dengan username saat ini tidak didukung. Silakan reply pesan user atau gunakan ID numerik.");
+    }
     targetId = parseInt(args[0]);
+    if (isNaN(targetId)) {
+        return ctx.reply("❌ User ID tidak valid. Gunakan ID numerik.");
+    }
   } else {
-    return ctx.reply("❌ Contoh: /promote  atau reply pesan user.");
+    return ctx.reply("❌ Contoh: /promote <user_id> atau reply pesan user.");
   }
 
   try {
+    const targetUser = await ctx.telegram.getChatMember(ctx.chat.id, targetId);
+    if (targetUser.status === 'creator' || targetUser.status === 'administrator') {
+        return ctx.reply('❌ User tersebut sudah menjadi admin.');
+    }
+
     await ctx.promoteChatMember(targetId, {
       can_change_info: true,
       can_delete_messages: true,
@@ -1895,7 +1963,7 @@ bot.command("promote", async (ctx) => {
     ctx.reply(`✅ User ${targetId} berhasil dipromosikan jadi admin.`);
   } catch (e) {
     console.error("Promote gagal:", e.message);
-    ctx.reply("⚠️ Gagal promote user (bot harus admin dengan izin promote).");
+    ctx.reply(`⚠️ Gagal promote user. Pastikan bot adalah admin dengan izin promote.\nDebug: ${e.message}`);
   }
 });
 
@@ -1930,6 +1998,29 @@ bot.command("unpromote", async (ctx) => {
   } catch (e) {
     console.error("Unpromote gagal:", e.message);
     ctx.reply("⚠️ Gagal unpromote user (bot harus admin dengan izin promote).");
+  }
+});
+
+bot.command("debug_permissions", async (ctx) => {
+  try {
+    const botId = ctx.botInfo.id;
+    const chatMember = await ctx.telegram.getChatMember(ctx.chat.id, botId);
+
+    let response = `🔍 Debug Permissions for Bot:\n`;
+    response += `Status: ${chatMember.status}\n`;
+    if (chatMember.status === 'administrator') {
+        response += `Can Promote Members: ${chatMember.can_promote_members ? '✅ Yes' : '❌ No'}\n`;
+        response += `Can Change Info: ${chatMember.can_change_info ? '✅ Yes' : '❌ No'}\n`;
+        response += `Can Delete Messages: ${chatMember.can_delete_messages ? '✅ Yes' : '❌ No'}\n`;
+        response += `Can Invite Users: ${chatMember.can_invite_users ? '✅ Yes' : '❌ No'}\n`;
+        response += `Can Restrict Members: ${chatMember.can_restrict_members ? '✅ Yes' : '❌ No'}\n`;
+        response += `Can Pin Messages: ${chatMember.can_pin_messages ? '✅ Yes' : '❌ No'}\n`;
+    }
+
+    ctx.reply(response);
+  } catch (e) {
+    console.error("Debug Permissions Error:", e.message);
+    ctx.reply(`⚠️ Gagal memeriksa izin bot.\nDebug: ${e.message}`);
   }
 });
 
@@ -1998,7 +2089,7 @@ bot.command("mute", async (ctx) => {
 });
 
 bot.catch((err, ctx) => {
-  console.error(chalk.red(`❌ Ooops, encountered an error for ${ctx.updateType}`), err);
+  console.error(chalk.red(`❌ Ooops, encountered an error for ${ctx.updateType}`), err.message);
 });
 
 // ==== UNMUTE USER ====
@@ -2751,10 +2842,12 @@ bot.command("tourl", async (ctx) => {
       `✅ Berhasil upload ke Catbox\n\n🔗 URL: ${url}\n♾️ Expired: Permanen`
     );
   } catch (err) {
-    console.error("❌ Error /tourl:", err);
+    console.error("❌ Error /tourl:", err.message);
     ctx.reply("⚠️ Gagal upload ke Catbox, coba lagi.");
   }
 });
+
+
 
 
 
@@ -2768,6 +2861,72 @@ bot.action(/.*/, async (ctx) => {
   await ctx.reply(`⚠️ Callback '${ctx.callbackQuery.data}' tidak dikenali`);
 });
 
+
+// ==== GLOBAL ERROR HANDLER ====
+process.on('uncaughtException', (err, origin) => {
+  console.error(`\nCaught exception: ${err}\n` + `Exception origin: ${origin}`);
+  const errorMessage = `
+    🚨 *BOT ERROR* 🚨
+
+    An uncaught exception occurred:
+    \`\`\`
+    ${err.stack}
+    \`\`\`
+    Origin: \`${origin}\`
+  `;
+
+  // Read admin IDs from file
+  fs.readFile(adminFile, 'utf8', (fsErr, data) => {
+    if (fsErr) {
+      console.error('Error reading admin file:', fsErr);
+      return;
+    }
+    try {
+      const adminData = JSON.parse(data);
+      const admins = adminData.admins || [];
+      if (admins.length > 0) {
+        admins.forEach(adminId => {
+          bot.telegram.sendMessage(adminId, errorMessage, { parse_mode: 'Markdown' })
+            .catch(e => console.error(`Failed to send error to admin ${adminId}:`, e));
+        });
+      }
+    } catch (parseErr) {
+      console.error('Error parsing admin file:', parseErr);
+    }
+  });
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  const errorMessage = `
+    🚨 *BOT ERROR* 🚨
+
+    An unhandled rejection occurred:
+    \`\`\`
+    ${reason.stack || reason}
+    \`\`\`
+  `;
+
+  // Read admin IDs from file
+  fs.readFile(adminFile, 'utf8', (fsErr, data) => {
+    if (fsErr) {
+      console.error('Error reading admin file:', fsErr);
+      return;
+    }
+    try {
+      const adminData = JSON.parse(data);
+      const admins = adminData.admins || [];
+      if (admins.length > 0) {
+        admins.forEach(adminId => {
+          bot.telegram.sendMessage(adminId, errorMessage, { parse_mode: 'Markdown' })
+            .catch(e => console.error(`Failed to send error to admin ${adminId}:`, e));
+        });
+      }
+    } catch (parseErr) {
+      console.error('Error parsing admin file:', parseErr);
+    }
+  });
+});
 
 // Run bot
 bot.launch().then(() => console.log("✅ Bot berjalan..."));
