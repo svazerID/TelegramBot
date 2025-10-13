@@ -1,8 +1,8 @@
 /*
- * BERVIZ MD V1 🍁
+ * BERVIZ MD V1 🧩
  * BOT YANG DICIPTAKAN OLEH MARSELLNOTDEV  DIKEMAS DALAM BAHASA NODE JS DENGAN     SEBAGIAN FITUR YANG LUMAYAN BANYAK
  * THANK TO : * MARSELLNOTDEV ( # DEV)
-                * yuzuriha ( # GIRLFRIEND )
+                * Alfi ( # BEBAN )
  */
 const { Telegraf, Markup, session } = require("telegraf");
 
@@ -324,19 +324,19 @@ bot.start(async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩
+       Hi ${username} I'm a Telegram Bot that can help you with various tasks.
 
-<b>┏─「 𝐈𝐧𝐟𝐨𝐫𝐦𝐚𝐭𝐢𝐨𝐧 𝐁𝐨𝐭 」──ⓘ</b>
-<b>│▢ 𝙲𝚛𝚎𝚊𝚝𝚘𝚛: @alfisyahrial</b>
-<b>│▢ 𝙱𝚘𝚝𝙽𝚊𝚖𝚎: уυzυяιнα αι</b>
-<b>│▢ Vᴇʀsɪᴏɴ: 1.0</b>
-<b>│▢ 𝙻𝚊𝚗𝚐𝚞𝚊𝚐𝚎: 𝙹𝚊𝚟𝚊 𝚂𝚌𝚛𝚒𝚙𝚝</b>
-<b>│▢ 𝚁𝚞𝚗𝚝𝚒𝚖𝚎: ${runtime}</b>
-<b>│▢ 𝚃𝚊𝚗𝚐𝚐𝚊𝚕: ${date}</b>
-<b>┗───────────────────ⓘ</b>
+
+<b>╭─────≼ 𝐈𝐧𝐟𝐨𝐫𝐦𝐚𝐭𝐢𝐨𝐧 𝐁𝐨𝐭 ≽</b>
+<b>│々 𝙲𝚛𝚎𝚊𝚝𝚘𝚛: @alfisyahrial</b>
+<b>│々 𝙱𝚘𝚝𝙽𝚊𝚖𝚎: уυzυяιнα αι</b>
+<b>│々 Vᴇʀsɪᴏɴ: 1.0</b>
+<b>│々 𝙻𝚊𝚗𝚐𝚞𝚊𝚐𝚎: 𝙹𝚊𝚟𝚊 𝚂𝚌𝚛𝚒𝚙𝚝</b>
+<b>│々 𝚁𝚞𝚗𝚝𝚒𝚖𝚎: ${runtime}</b>
+<b>│々 𝚃𝚊𝚗𝚐𝚐𝚊𝚕: ${date}</b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -368,29 +368,27 @@ bot.action('ownmenu', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐎𝐰𝐧 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>│▢ /promote </b>
-<b>│▢ /mute </b>
-<b>│▢ /kick </b>
-<b>│▢ /unmute </b>
-<b>│▢ /addpremium </b>
-<b>│▢ /delpremium </b>
-<b>│▢ /listpremium</b>
-<b>│▢ /addadmin </b>
-<b>│▢ /deladmin </b>
-<b>│▢ /listadmin</b>
-<b>│▢ /antilink</b>
-<b>│▢ /antispam</b>
-<b>│▢ /welcome</b>
-<b>│▢ /goodbye</b>
-<b>│▢ /unpromote </b>
-<b>│▢ /info </b>
-<b>┗───────────────────ⓘ</b>
+<b>╭─────≼  𝐎𝐰𝐧 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>│々 /promote </b>
+<b>│々 /mute </b>
+<b>│々 /kick </b>
+<b>│々 /unmute </b>
+<b>│々 /addpremium </b>
+<b>│々 /delpremium </b>
+<b>│々 /listpremium</b>
+<b>│々 /addadmin </b>
+<b>│々 /deladmin </b>
+<b>│々 /listadmin</b>
+<b>│々 /antilink</b>
+<b>│々 /antispam</b>
+<b>│々 /welcome</b>
+<b>│々 /goodbye</b>
+<b>│々 /unpromote </b>
+<b>│々 /info </b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -422,24 +420,22 @@ bot.action('funmenu', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐅𝐮𝐧 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>│▢ /brat</b>
-<b>│▢ /bratvid</b>
-<b>│▢ /cekkhodam</b>
-<b>│▢ /cektolol</b>
-<b>│▢ /cekcantik</b>
-<b>│▢ /cekganteng</b>
-<b>│▢ /cekkontol</b>
-<b>│▢ /cekmemek</b>
-<b>│▢ /gombalan</b>
-<b>│▢ /gombalin</b>
-<b>│▢ /galau</b>
-<b>┗───────────────────ⓘ</b>
+<b>╭─────≼  𝐅𝐮𝐧 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>│々 /brat</b>
+<b>│々 /bratvid</b>
+<b>│々 /cekkhodam</b>
+<b>│々 /cektolol</b>
+<b>│々 /cekcantik</b>
+<b>│々 /cekganteng</b>
+<b>│々 /cekkontol</b>
+<b>│々 /cekmemek</b>
+<b>│々 /gombalan</b>
+<b>│々 /gombalin</b>
+<b>│々 /galau</b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -471,15 +467,14 @@ bot.action('stalkmenu', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐒𝐭𝐚𝐥𝐤 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>│▢ /igstalk </b>
-<b>│▢ /ttstalk </b>
-<b>┗───────────────────ⓘ</b>
+<b>╭─────≼  𝐒𝐭𝐚𝐥𝐤 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>│々 /igstalk </b>
+<b>│々 /ttstalk </b>
+<b>│々 /discordstalk </b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -511,22 +506,21 @@ bot.action('downmenu', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩
+Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐃𝐨𝐰𝐧 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>│▢ /ytmp3 </b>
-<b>│▢ /ytmp4 </b>
-<b>│▢ /yt </b>
-<b>│▢ /spotify </b>
-<b>│▢ /ttdown </b>
-<b>│▢ /aio </b>
-<b>│▢ /instagram </b>
-<b>│▢ /tiktoksearch </b>
-<b>│▢ /pinterest </b>
-<b>┗───────────────────ⓘ</b>
+<b>╭─────≼  𝐃𝐨𝐰𝐧 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>│々 /ytmp3 </b>
+<b>│々 /ytmp4 </b>
+<b>│々 /play </b>
+<b>│々 /spotify </b>
+<b>│々 /ttdown </b>
+<b>│々 /aio </b>
+<b>│々 /instagram </b>
+<b>│々 /tiktoksearch </b>
+<b>│々 /pinterest </b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -558,19 +552,18 @@ bot.action('aimenu', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩
+Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐀𝐢 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>│▢ /inori</b>
-<b>│▢ /deepseek</b>
-<b>│▢ /claude</b>
-<b>│▢ /genimage</b>
-<b>│▢ /gemini</b>
-<b>│▢ /gemini_reset</b>
-<b>┗───────────────────ⓘ</b>
+<b>╭─────≼  𝐀𝐢 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>│々 /inori</b>
+<b>│々 /deepseek</b>
+<b>│々 /claude</b>
+<b>│々 /genimage</b>
+<b>│々 /gemini</b>
+<b>│々 /gemini_reset</b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -602,21 +595,19 @@ bot.action('toolsmenu', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐓𝐨𝐨𝐥𝐬 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>│▢ /tourl</b>
-<b>│▢ /editimg</b>
-<b>│▢ /felosearch</b>
-<b>│▢ /nanobanana</b>
-<b>│▢ /enhance</b>
-<b>│▢ /infogempa</b>
-<b>│▢ /screenshot</b>
-<b>│▢ /jadwalsholat</b>
-<b>┗───────────────────ⓘ</b>
+<b>╭─────≼  𝐓𝐨𝐨𝐥𝐬 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>│々 /tourl</b>
+<b>│々 /editimg</b>
+<b>│々 /felosearch</b>
+<b>│々 /nanobanana</b>
+<b>│々 /enhance</b>
+<b>│々 /infogempa</b>
+<b>│々 /screenshot</b>
+<b>│々 /jadwalsholat</b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -652,18 +643,16 @@ bot.action('tqto', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩
 
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐓𝐡𝐚𝐧𝐤 𝐓𝐨 🍁 」──ⓘ</b>
-<b>│▢ 𝗧𝘂𝗵𝗮𝗻 𝗬𝗺𝗲 ( 𝗚𝗼𝗱 )</b>
-<b>│▢ 𝗠𝗮𝗿𝘀𝗲𝗹 𝗠𝗮𝗻𝘂𝗿𝘂𝗻𝗴 ( 𝗗𝗲𝘃 )</b>
-<b>│▢ 𝗚𝗲𝗯𝘆 ( 𝗠𝘆 𝗚𝗶𝗿𝗹𝗳𝗿𝗶𝗲𝗻𝗱 )</b>
-<b>│▢ 𝗔𝗹𝗹 𝗠𝘆 𝗙𝗿𝗶𝗲𝗻𝗱𝘀</b>
-<b>┗───────────────────ⓘ</b>
-</blockquote>`,
+╭─────≼  𝐓𝐡𝐚𝐧𝐤 𝐓𝐨 🧩 ≽
+│々 MARSEL ( DEV )
+│々 ALFI ( BEBAN )
+│々 PENGGUNA BOT INI
+╰─────────────〢`,
       parse_mode: "HTML",
       reply_markup: { inline_keyboard: inlineKeyboard },
     });
@@ -690,13 +679,11 @@ bot.action('primbonmenu', async (ctx) => {
   ];
 
   setTimeout(async () => {
-    await ctx.replyWithPhoto("https://kua.lat/inori", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🍁
-      
-👋 Halooo ${username}, saya adalah 𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄, yang siap membantu kamu dengan fitur yang disediakan oleh pencipta ku 
+    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>┏─「  𝐏𝐫𝐢𝐦𝐛𝐨𝐧 𝐌𝐞𝐧𝐮 🍁 」──ⓘ</b>
-<b>┗───────────────────ⓘ</b>
+<b>╭─────≼  𝐏𝐫𝐢𝐦𝐛𝐨𝐧 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>╰─────────────〢</b>
 
 </blockquote>
       `,
@@ -708,8 +695,40 @@ bot.action('primbonmenu', async (ctx) => {
   }, 1000);
 });
 
+bot.action('/backmenu_', async (ctx) => {
+  const username = ctx.from.username ? `@${ctx.from.username}` : "Tidak Diketahui";
+  const runtime = getBotRuntime();
+  const date = getCurrentDate();
+
+  await ctx.answerCbQuery();
+  await ctx.telegram.sendChatAction(ctx.chat.id, "typing");
+
+  const inlineKeyboard = [
+        [
+      { text: "ᴏᴡɴ ᴍᴇɴᴜ", callback_data: "ownmenu" },
+      { text: "ꜰᴜɴ ᴍᴇɴᴜ", callback_data: "funmenu" },
+      { text: "ᴛʜᴀɴᴋ ᴛᴏ", callback_data: "tqto" },
+        ],
+        [
+      { text: "ᴛᴏᴏʟꜱ ᴍᴇɴᴜ", callback_data: "toolsmenu" },
+      { text: "ꜱᴛᴀʟᴋ ᴍᴇɴᴜ", callback_data: "stalkmenu" },
+      { text: "ᴀɪ ᴍᴇɴᴜ", callback_data: "aimenu" }
+        ],
+      [{ text: "ᴅᴏᴡɴ ᴍᴇɴᴜ", callback_data: "downmenu" }],
+      [{ text: "ᴘʀɪᴍʙᴏɴ ᴍᴇɴᴜ", callback_data: "primbonmenu", }],
+  ];
+
+  await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
+      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩\n      \nHi ${username} I'm a Telegram Bot that can help you with various tasks. \n\n<b>╭─────≼ 𝐈𝐧𝐟𝐨𝐫𝐦𝐚𝐭𝐢𝐨𝐧 𝐁𝐨𝐭 ≽</b>\n<b>│々 𝙲𝚛𝚎𝚊𝚝𝚘𝚛: @alfisyahrial</b>\n<b>│々 𝙱𝚘𝚝𝙽𝚊𝚖е: уυzυяιнα αι</b>\n<b>│々 Vᴇʀsɪᴏɴ: 1.0</b>\n<b>│々 𝙻𝚊𝚗𝚐𝚞𝚊𝚐е: 𝙹𝚊𝚟𝚊 𝚂𝚌𝚛𝚒𝚙𝚝</b>\n<b>│々 𝚁𝚞𝚗𝚝𝚒𝚖е: ${runtime}</b>\n<b>│々 𝚃𝚊𝚗𝚐𝚐𝚊𝚕: ${date}</b>\n<b>╰─────────────〢</b>\n\n</blockquote>\n      `,
+      parse_mode: "HTML",
+      reply_markup: {
+        inline_keyboard: inlineKeyboard,
+      },
+    });
+});
+
 // === Command /yt (YouTube Search dengan thumbnail + pagination) ===
-bot.command("yt", async (ctx) => {
+bot.command("play", async (ctx) => {
   try {
     const query = ctx.message.text.split(" ").slice(1).join(" ");
     if (!query) return ctx.reply("❌ Masukkan judul atau link YouTube!");
@@ -732,7 +751,7 @@ bot.command("yt", async (ctx) => {
 
     await sendSearchResult(ctx, userId, 0);
   } catch (err) {
-    console.error("❌ Error /yt:", err?.response?.status || err.message);
+    console.error("❌ Error /play:", err?.response?.status || err.message);
     ctx.reply("⚠️ Terjadi error saat mencari video.");
   }
 });
@@ -752,15 +771,15 @@ async function sendSearchResult(ctx, userId, page) {
       Markup.button.callback("🎥 MP4", `ytmp4:${page}`),
     ],
     [
-      ...(page > 0 ? [Markup.button.callback("⬅️ Prev", `ytprev:${page - 1}`)] : []),
+      ...(page > 0 ? [Markup.button.callback("⬅️ Prev", `playprev:${page - 1}`)] : []),
       ...(page < list.length - 1
-        ? [Markup.button.callback("➡️ Next", `ytnext:${page + 1}`)]
+        ? [Markup.button.callback("➡️ Next", `playnext:${page + 1}`)]
         : []),
     ],
   ]);
 
   const caption = `
-┏╼━━━━「  𝗬𝘁 𝗦𝗲𝗮𝗿𝗰𝗵 🍁 」━━━━━━━╾┓
+┏╼━━━━「  𝗬𝘁 𝗦𝗲𝗮𝗿𝗰𝗵 🧩 」━━━━━━━╾┓
 ╎🎬 *${vid.title}*\n
 ╎👤 Channel: ${vid.channel}\n
 ╎⏱ Duration: ${vid.duration}\n\n_${page + 1} dari ${list.length}_
@@ -780,7 +799,7 @@ async function sendSearchResult(ctx, userId, page) {
 }
 
 // === Handler tombol Next/Prev ===
-bot.action(/ytnext:(\d+)/, async (ctx) => {
+bot.action(/playnext:(\d+)/, async (ctx) => {
   try {
     const page = parseInt(ctx.match[1], 10);
     const store = searchResults.get(ctx.from.id);
@@ -791,7 +810,7 @@ bot.action(/ytnext:(\d+)/, async (ctx) => {
   } catch {}
 });
 
-bot.action(/ytprev:(\d+)/, async (ctx) => {
+bot.action(/playprev:(\d+)/, async (ctx) => {
   try {
     const page = parseInt(ctx.match[1], 10);
     const store = searchResults.get(ctx.from.id);
@@ -928,6 +947,29 @@ function escapeHTML(text = "") {
     .replace(/>/g, "&gt;");
 }
 
+async function getIgProfile(username) {
+    const API_SIGNATURE = "zbldWYgoGNmYOEnryJmZCfns+JmZrA1Nzd2N3Y39XV2d3bLdM2Mj";
+    const apiUrl = `https://api.story-viewer.co/user/${encodeURIComponent(username)}?sig=${API_SIGNATURE}`;
+ 
+    try {
+        const { data } = await axios.get(apiUrl, {
+            headers: {
+                'Origin': 'https://story-viewer.co',
+                'Referer': 'https://story-viewer.co/',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+            }
+        });
+        if (!data.username) {
+            throw new Error('Pengguna tidak ditemukan atau terjadi kesalahan.');
+        }
+ 
+        return data;
+    } catch (error) {
+        console.error('Error on IG Stalker API:', error.response ? error.response.data : error.message);
+        throw error;
+    }
+}
+
 bot.command("igstalk", async (ctx) => {
   let text = ctx.message.text.split(" ").slice(1).join(" ");
   if (!text) return ctx.reply("❌ Contoh: /igstalk username");
@@ -937,25 +979,17 @@ bot.command("igstalk", async (ctx) => {
 
   try {
     await ctx.reply("Sedang mengintip profil Instagram...");
-    const res = await axios.get(
-      `https://alfixd-api.koyeb.app/igstalk?username=${encodeURIComponent(text)}`
-    );
-
-    const user = res.data;
-
-    if (!user || user.username === null) {
-      return ctx.reply("❌ Username tidak ditemukan atau profil bersifat pribadi.");
-    }
+    const user = await getIgProfile(text);
 
     let caption = `📸 <b>Instagram Stalker</b>\n\n`;
-    caption += `👤 <b>Username:</b> ${escapeHTML(text)}\n`;
-    caption += `📛 <b>Full Name:</b> ${escapeHTML(user.fullname) || "-"}\n`;
-    caption += `📝 <b>Bio:</b> ${escapeHTML(user.bio) || "-"}\n`;
-    caption += `📌 <b>Posts:</b> ${user.posts || "0"}\n`;
-    caption += `👥 <b>Followers:</b> ${user.followers || "0"}\n`;
-    caption += `➡️ <b>Following:</b> ${user.following || "0"}\n`;
+    caption += `👤 <b>Username:</b> ${escapeHTML(user.username)}\n`;
+    caption += `📛 <b>Full Name:</b> ${escapeHTML(user.full_name) || "-"}\n`;
+    caption += `📝 <b>Bio:</b> ${escapeHTML(user.biography) || "-"}\n`;
+    caption += `📌 <b>Posts:</b> ${user.media_count || "0"}\n`;
+    caption += `👥 <b>Followers:</b> ${user.follower_count || "0"}\n`;
+    caption += `➡️ <b>Following:</b> ${user.following_count || "0"}\n`;
 
-    const photoUrl = user.profilePic || null;
+    const photoUrl = user.profile_pic_url_hd || user.profile_pic_url || null;
 
     if (photoUrl) {
       await ctx.replyWithPhoto(
@@ -1020,6 +1054,49 @@ bot.command("ttstalk", async (ctx) => {
   } catch (e) {
     console.error("❌ TTSTALK Error:", e.message);
     ctx.reply("❌ Gagal mengambil data TikTok (mungkin API down atau username tidak valid).");
+  }
+});
+
+bot.command("discordstalk", async (ctx) => {
+  const userId = ctx.message.text.split(" ").slice(1).join(" ");
+  if (!userId) {
+    return ctx.reply("❌ Contoh: /discordstalk <user_id>");
+  }
+
+  try {
+    await ctx.reply("Sedang mengintip profil Discord...");
+
+    const apiUrl = `https://anabot.my.id/api/tools/stalkDiscord?id=${encodeURIComponent(userId)}&apikey=freeApikey`;
+    const res = await axios.get(apiUrl);
+    const data = res.data;
+
+    if (!data.success || !data.data || !data.data.result) {
+      return ctx.reply("❌ User tidak ditemukan atau terjadi kesalahan.");
+    }
+
+    const user = data.data.result;
+
+    let caption = `🎧 <b>Discord Stalker</b>\n\n`;
+    caption += `👤 <b>Username:</b> ${escapeHTML(user.username)}\n`;
+    caption += `🌍 <b>Global Name:</b> ${escapeHTML(user.global_name) || "-"}\n`;
+    caption += `🆔 <b>ID:</b> ${user.id}\n`;
+    caption += `📅 <b>Created At:</b> ${new Date(user.created_at).toLocaleString('id-ID')}\n`;
+    caption += `⏳ <b>Account Age:</b> ${user.accountAge}\n`;
+    caption += `💎 <b>Premium:</b> ${user.premium_type}\n`;
+
+    const photoUrl = user.avatar.link || null;
+
+    if (photoUrl) {
+      await ctx.replyWithPhoto(
+        { url: photoUrl },
+        { caption, parse_mode: "HTML" }
+      );
+    } else {
+      await ctx.reply(caption, { parse_mode: "HTML" });
+    }
+  } catch (e) {
+    console.error("❌ DISCORDSTALK Error:", e.message);
+    ctx.reply("❌ Gagal mengambil data Discord (mungkin API down atau user ID tidak valid).");
   }
 });
 
@@ -2149,7 +2226,7 @@ async function sendKhodam(ctx, text, isCallback = false) {
     const hasil = data[Math.floor(Math.random() * data.length)];
 
     const message = `
-┏╼━━━「  𝗖𝗲𝗸 𝗞𝗵𝗼𝗱𝗮𝗺 🍁 」━━━━╾┓
+┏╼━━━「  𝗖𝗲𝗸 𝗞𝗵𝗼𝗱𝗮𝗺 🧩 」━━━━╾┓
 ╎🔮 Khodam dari *${text}*
 ╎adalah *${hasil.nama}*\n_${hasil.deskripsi}_
 ┗╼━━━━━━━━━━━━━━━━━━━━━╾┛
@@ -2208,7 +2285,7 @@ bot.command("info", async (ctx) => {
   const fullName = `${firstName} ${lastName}`.trim();
 
   const text = `
-┏╼━━「  𝗜𝗻𝗳𝗼 🍁 」━━━━━━╾┓
+┏╼━━「  𝗜𝗻𝗳𝗼 🧩 」━━━━━━╾┓
 ╎🆔 *ID Telegram:* \`${userId}\`
 ╎👤 *Nama:* ${fullName}
 ╎🔗 *Username:* ${username}
@@ -2706,7 +2783,7 @@ const galau = [
     "Jika senja mengalah demi malam,maka aku akan mengalah demi seseorang yang kau jadikan pilihan",
 ]
 const jembut = galau[Math.floor(Math.random() * galau.length)];
-  await ctx.reply(`🍁 ${jembut}`);
+  await ctx.reply(`🧩 ${jembut}`);
 });
 
 
