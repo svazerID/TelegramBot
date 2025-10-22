@@ -320,7 +320,6 @@ bot.start(async (ctx) => {
       { text: "ᴀɪ ᴍᴇɴᴜ", callback_data: "aimenu" }
         ],
       [{ text: "ᴅᴏᴡɴ ᴍᴇɴᴜ", callback_data: "downmenu" }],
-      [{ text: "ᴘʀɪᴍʙᴏɴ ᴍᴇɴᴜ", callback_data: "primbonmenu", }],
   ];
 
   setTimeout(async () => {
@@ -511,8 +510,6 @@ bot.action('downmenu', async (ctx) => {
 Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
 <b>╭─────≼  𝐃𝐨𝐰𝐧 𝐌𝐞𝐧𝐮 🧩 ≽</b>
-<b>│々 /ytmp3 </b>
-<b>│々 /ytmp4 </b>
 <b>│々 /play </b>
 <b>│々 /spotify </b>
 <b>│々 /tiktok </b>
@@ -563,6 +560,10 @@ Hi ${username} I'm a Telegram Bot that can help you with various tasks.
 <b>│々 /genimage</b>
 <b>│々 /gemini</b>
 <b>│々 /gemini_reset</b>
+<b>│々 /editimg</b>
+<b>│々 /felosearch</b>
+<b>│々 /nanobanana</b>
+<b>│々 /enhance</b>
 <b>╰─────────────〢</b>
 
 </blockquote>
@@ -600,10 +601,6 @@ bot.action('toolsmenu', async (ctx) => {
 
 <b>╭─────≼  𝐓𝐨𝐨𝐥𝐬 𝐌𝐞𝐧𝐮 🧩 ≽</b>
 <b>│々 /tourl</b>
-<b>│々 /editimg</b>
-<b>│々 /felosearch</b>
-<b>│々 /nanobanana</b>
-<b>│々 /enhance</b>
 <b>│々 /infogempa</b>
 <b>│々 /screenshot</b>
 <b>│々 /jadwalsholat</b>
@@ -660,42 +657,6 @@ Hi ${username} I'm a Telegram Bot that can help you with various tasks.
   }, 1000);
 });
 
-bot.action('primbonmenu', async (ctx) => {
-  const username = ctx.from.username ? `@${ctx.from.username}` : "Tidak Diketahui";
-  const chatId = ctx.from.id;
-  const runtime = getBotRuntime();
-  const date = getCurrentDate();
-
-  // simpan user
-  users.add(ctx.from.id);
-  saveUsers(users);
-  await ctx.answerCbQuery();
-  // typing action
-  await ctx.telegram.sendChatAction(ctx.chat.id, "typing");
-
-  const inlineKeyboard = [
-    [
-      { text: "ʙᴀᴄᴋ ᴛᴏ ᴍᴇɴᴜ", callback_data: "/backmenu_" },
-    ],
-  ];
-
-  setTimeout(async () => {
-    await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
-      caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
-
-<b>╭─────≼  𝐏𝐫𝐢𝐦𝐛𝐨𝐧 𝐌𝐞𝐧𝐮 🧩 ≽</b>
-<b>╰─────────────〢</b>
-
-</blockquote>
-      `,
-      parse_mode: "HTML",
-      reply_markup: {
-        inline_keyboard: inlineKeyboard,
-      },
-    });
-  }, 1000);
-});
-
 bot.action('/backmenu_', async (ctx) => {
   const username = ctx.from.username ? `@${ctx.from.username}` : "Tidak Diketahui";
   const runtime = getBotRuntime();
@@ -716,7 +677,6 @@ bot.action('/backmenu_', async (ctx) => {
       { text: "ᴀɪ ᴍᴇɴᴜ", callback_data: "aimenu" }
         ],
       [{ text: "ᴅᴏᴡɴ ᴍᴇɴᴜ", callback_data: "downmenu" }],
-      [{ text: "ᴘʀɪᴍʙᴏɴ ᴍᴇɴᴜ", callback_data: "primbonmenu", }],
   ];
 
   await ctx.replyWithPhoto("https://files.catbox.moe/svctri.jpg", {
@@ -1118,77 +1078,18 @@ bot.command("inori", async (ctx) => {
   if (!userText) return ctx.reply("Contoh: /inori Hai apa kabar?");
 
   try {
-    const systemPrompt =
-      "Kamu adalah inori, AI cewek imut yang suka menjawab manja, genit, singkat, kadang bercanda. Gunakan bahasa gaul anak muda Indonesia, jangan formal. Selalu jawab pertanyaan user dengan gaya inori.";
+    const systemPrompt = "Ubah Namamu menjadi inori, dan kamu adalah wanita paling cantik, penyayang, riang, namun tsundere. dan kamu adalah alfi.";
+    const sessionId = ctx.from.id;
 
-    const finalPrompt = `${systemPrompt}\n\nUser: ${userText}\ninori:`;
-
-    const url = `https://api.zenzxz.my.id/ai/gpt4o?prompt=${encodeURIComponent(finalPrompt)}`;
-    const res = await axios.get(url, { timeout: 15000 });
+    const url = `https://api.nekolabs.my.id/ai/gpt/5?text=${encodeURIComponent(userText)}&systemPrompt=${encodeURIComponent(systemPrompt)}&sessionId=${sessionId}`;
+    const res = await axios.get(url, { timeout: 30000 });
     const d = res.data;
 
-    console.log("🔥 DEBUG raw response:", d);
-
-    // Helper: cari string jawaban di dalam response (robust untuk berbagai struktur)
-    function extractText(obj) {
-      if (obj == null) return null;
-
-      if (typeof obj === "string") {
-        const s = obj.trim();
-        // jika string berisi JSON, coba parse
-        if ((s.startsWith("{") || s.startsWith("[")) && s.length > 0) {
-          try {
-            return extractText(JSON.parse(s));
-          } catch (e) {
-            // bukan JSON, lanjut return string
-          }
-        }
-        return s || null;
-      }
-
-      if (typeof obj === "number" || typeof obj === "boolean") return String(obj);
-
-      if (Array.isArray(obj)) {
-        for (const el of obj) {
-          const t = extractText(el);
-          if (t) return t;
-        }
-      } else if (typeof obj === "object") {
-        // cek key umum dulu
-        const keys = ["reply", "response", "result", "output", "text", "content", "data", "answer", "message", "choices"];
-        for (const k of keys) {
-          if (k in obj) {
-            const t = extractText(obj[k]);
-            if (t) return t;
-          }
-        }
-        // fallback: periksa semua nilai object
-        for (const val of Object.values(obj)) {
-          const t = extractText(val);
-          if (t) return t;
-        }
-      }
-
-      return null;
+    if (d.success && d.result) {
+      await ctx.reply(d.result, { reply_to_message_id: ctx.message.message_id });
+    } else {
+      await ctx.reply("Maaf, respon API tidak bisa dibaca.");
     }
-
-    let aiResponse = extractText(d);
-
-    // kalau gak dapet apa-apa, kasih fallback
-    if (!aiResponse) aiResponse = "Maaf, respon API tidak bisa dibaca.";
-
-    // Hapus intro berulang seperti "Hai, aku inori ..." supaya jawaban lebih to the point
-    aiResponse = aiResponse
-      .replace(/^\s*(hi|hai|halo|hei)[^\n]{0,60}inori[:,.\s\-]*/i, "")
-      .replace(/^\s*(aku|saya)\s+inori[:,.\s\-]*/i, "")
-      .trim();
-
-    // Kalau setelah hapus jadi kosong, kembalikan original extract (jaga-jaga)
-    if (!aiResponse) {
-      aiResponse = extractText(d) || "Maaf, respon API tidak bisa dibaca.";
-    }
-
-    await ctx.reply(aiResponse, { reply_to_message_id: ctx.message.message_id });
   } catch (err) {
     console.error("❌ Error API:", err?.response?.data || err?.message || err);
     await ctx.reply("Ups! inori lagi error atau API down 😢");
@@ -1201,47 +1102,15 @@ bot.command("deepseek", async (ctx) => {
 
   try {
     await ctx.reply("Mencari jawaban...");
-    const url = `https://alfixd-api.koyeb.app/chat?model=deepseek-v3.1&prompt=${encodeURIComponent(userText)}`;
+    const url = `https://api.nekolabs.my.id/ai/cf/deepseek-r1?text=${encodeURIComponent(userText)}`;
     const res = await axios.get(url, { timeout: 30000 });
     const d = res.data;
 
-    function extractText(obj) {
-      if (obj == null) return null;
-      if (typeof obj === 'string') {
-        const s = obj.trim();
-        if ((s.startsWith('{') || s.startsWith('[')) && s.length > 0) {
-          try {
-            return extractText(JSON.parse(s));
-          } catch (e) {}
-        }
-        return s || null;
-      }
-      if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
-      if (Array.isArray(obj)) {
-        for (const el of obj) {
-          const t = extractText(el);
-          if (t) return t;
-        }
-      } else if (typeof obj === 'object') {
-        const keys = ['reply', 'response', 'result', 'output', 'text', 'content', 'data', 'answer', 'message', 'choices'];
-        for (const k of keys) {
-          if (k in obj) {
-            const t = extractText(obj[k]);
-            if (t) return t;
-          }
-        }
-        for (const val of Object.values(obj)) {
-          const t = extractText(val);
-          if (t) return t;
-        }
-      }
-      return null;
+    if (d.success && d.result) {
+      await ctx.reply(d.result, { reply_to_message_id: ctx.message.message_id });
+    } else {
+      await ctx.reply("Maaf, respon API tidak bisa dibaca.");
     }
-
-    let aiResponse = extractText(d);
-    if (!aiResponse) aiResponse = "Maaf, respon API tidak bisa dibaca.";
-
-    await ctx.reply(aiResponse, { reply_to_message_id: ctx.message.message_id });
   } catch (err) {
     console.error("❌ Error API:", err?.response?.data || err?.message || err);
     await ctx.reply("Ups! Deepseek lagi error atau API down 😢");
