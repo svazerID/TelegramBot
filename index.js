@@ -607,6 +607,7 @@ bot.action('toolsmenu', async (ctx) => {
 <b>│々 /infogempa</b>
 <b>│々 /screenshot</b>
 <b>│々 /jadwalsholat</b>
+<b>│々 /removebg</b>
 <b>╰─────────────〢</b>
 
 </blockquote>
@@ -1349,6 +1350,27 @@ bot.command("genimage", async (ctx) => {
   }
 });
 
+const MAX_MESSAGE_LENGTH = 4000; // Telegram's message length limit is around 4096 characters
+
+function splitLongText(text, maxLength) {
+  const parts = [];
+  let currentPart = "";
+  const sentences = text.split(/(?<=[.!?])\s+/); // Split by sentence-ending punctuation followed by space
+
+  for (const sentence of sentences) {
+    if (currentPart.length + sentence.length + 1 <= maxLength) { // +1 for space
+      currentPart += (currentPart.length > 0 ? " " : "") + sentence;
+    } else {
+      parts.push(currentPart);
+      currentPart = sentence;
+    }
+  }
+  if (currentPart.length > 0) {
+    parts.push(currentPart);
+  }
+  return parts;
+}
+
 bot.command("gemini", async (ctx) => {
   const prompt = ctx.message.text.split(" ").slice(1).join(" ");
   if (!prompt) {
@@ -1391,7 +1413,10 @@ bot.command("gemini", async (ctx) => {
       // Add Gemini's response to history
       userData.history.push({ role: "model", parts: [{ text: data.result }] });
       geminiChatHistory.set(userId, userData);
-      await ctx.reply(data.result);
+      const messageParts = splitLongText(data.result, MAX_MESSAGE_LENGTH);
+      for (const part of messageParts) {
+        await ctx.reply(part);
+      }
     } else {
       ctx.reply("⚠️ Gagal mendapatkan respon dari Gemini. Coba lagi nanti.");
     }
