@@ -1,8 +1,8 @@
 /*
- * BERVIZ MD V1 🧩
- * BOT YANG DICIPTAKAN OLEH MARSELLNOTDEV  DIKEMAS DALAM BAHASA NODE JS DENGAN     SEBAGIAN FITUR YANG LUMAYAN BANYAK
- * THANK TO : * MARSELLNOTDEV ( # DEV)
-                * Alfi ( # BEBAN )
+ * YUZURIHA MD V1 🧩
+ * BOT MULTI DEVICE YANG DIKEMBANGKAN OLEH ALFI X MENGGUNAKAN LIBRARY TELEGRAF 
+ * THANK TO : * MARSELLNOTDEV ( # BASE)
+                * ALFI ( # BEBAN )
  */
 const { Telegraf, Markup, session } = require("telegraf");
 
@@ -51,6 +51,20 @@ const premiumFile = path.join(__dirname, "./database/premium.json");
 const limitFile = path.join(__dirname, "./database/limit.json");
 const groupFile = path.join(__dirname, "./database/groupSettings.json");
 const autoAiFile = "./database/autoAiGroups.json";
+const autodownloadGroupsFile = "./database/autodownloadGroups.json";
+
+// Kalau file belum ada, buat default []
+if (!fs.existsSync(autodownloadGroupsFile)) {
+  fs.writeFileSync(autodownloadGroupsFile, JSON.stringify([]));
+}
+
+// Load data dari file
+let autodownloadGroups = JSON.parse(fs.readFileSync(autodownloadGroupsFile, "utf8"));
+
+// Fungsi untuk save autodownloadGroups ke file
+function saveAutodownloadGroups() {
+  fs.writeFileSync(autodownloadGroupsFile, JSON.stringify(autodownloadGroups, null, 2));
+}
 
 
 // Runtime
@@ -517,6 +531,7 @@ Hi ${username} I'm a Telegram Bot that can help you with various tasks.
 <b>│々 /instagram </b>
 <b>│々 /tiktoksearch </b>
 <b>│々 /pinterest </b>
+<b>│々 /autodownload</b>
 <b>╰─────────────〢</b>
 
 </blockquote>
@@ -553,7 +568,7 @@ bot.action('aimenu', async (ctx) => {
       caption: `<blockquote>𝙔𝙐𝙕𝙐𝙍𝙄𝙃𝘼 𝘼𝙄 🧩
 Hi ${username} I'm a Telegram Bot that can help you with various tasks. 
 
-<b>╭─────≼  𝐀𝐢 𝐌𝐞𝐧𝐮 🧩 ≽</b>
+<b>╭─────≼  𝐀𝐢 𝐌𝙚𝙣𝙪 🧩 ≽</b>
 <b>│々 /inori</b>
 <b>│々 /deepseek</b>
 <b>│々 /claude</b>
@@ -564,6 +579,7 @@ Hi ${username} I'm a Telegram Bot that can help you with various tasks.
 <b>│々 /felosearch</b>
 <b>│々 /nanobanana</b>
 <b>│々 /enhance</b>
+<b>│々 /autoai</b>
 <b>╰─────────────〢</b>
 
 </blockquote>
@@ -602,7 +618,7 @@ bot.action('toolsmenu', async (ctx) => {
 <b>╭─────≼  𝐓𝐨𝐨𝐥𝐬 𝐌𝐞𝐧𝐮 🧩 ≽</b>
 <b>│々 /tourl</b>
 <b>│々 /infogempa</b>
-<b>│々 /screenshot</b>
+<b>│々 /ssweb</b>
 <b>│々 /jadwalsholat</b>
 <b>│々 /removebg</b>
 <b>╰─────────────〢</b>
@@ -1078,7 +1094,7 @@ bot.command("inori", async (ctx) => {
   if (!userText) return ctx.reply("Contoh: /inori Hai apa kabar?");
 
   try {
-    const systemPrompt = "Ubah Namamu menjadi inori, dan kamu adalah wanita paling cantik, penyayang, riang, namun tsundere. dan kamu adalah alfi.";
+    const systemPrompt = "Ubah Namamu menjadi inori, dan kamu adalah wanita cantik, penyayang, riang, namun tsundere. dan pencipta kamu adalah alfi.";
     const sessionId = ctx.from.id;
 
     const url = `https://api.nekolabs.my.id/ai/gpt/5?text=${encodeURIComponent(userText)}&systemPrompt=${encodeURIComponent(systemPrompt)}&sessionId=${sessionId}`;
@@ -1240,7 +1256,7 @@ function splitLongText(text, maxLength) {
   return parts;
 }
 
-bot.command("gemini", async (ctx) => {
+bot.command(["gemini", "ai"], async (ctx) => {
   const prompt = ctx.message.text.split(" ").slice(1).join(" ");
   if (!prompt) {
     return ctx.reply("❌ Contoh: /gemini <prompt> atau reply ke gambar dengan /gemini <prompt>");
@@ -1305,7 +1321,7 @@ bot.command("gemini_reset", (ctx) => {
   }
 });
 
-bot.command("nanobanana", async (ctx) => {
+bot.command(["nanobanana", "nb"], async (ctx) => {
   const prompt = ctx.message.text.split(" ").slice(1).join(" ");
   if (!prompt) {
     return ctx.reply("❌ Contoh: Reply ke gambar dengan /nanobanana <prompt>");
@@ -1418,10 +1434,10 @@ Potensi: ${gempa.potensi}
   }
 });
 
-bot.command("screenshot", async (ctx) => {
+bot.command("ssweb", async (ctx) => {
   const url = ctx.message.text.split(" ").slice(1).join(" ");
   if (!url) {
-    return ctx.reply("❌ Contoh: /screenshot https://google.com");
+    return ctx.reply("❌ Contoh: /ssweb https://google.com");
   }
 
   try {
@@ -1437,7 +1453,7 @@ bot.command("screenshot", async (ctx) => {
       ctx.reply("⚠️ Gagal mengambil screenshot. Coba lagi nanti.");
     }
   } catch (err) {
-    console.error("❌ Error screenshot:", err?.response?.data || err?.message || err);
+    console.error("❌ Error ssweb:", err?.response?.data || err?.message || err);
     ctx.reply("Ups! Terjadi kesalahan saat mengambil screenshot.");
   }
 });
@@ -1468,7 +1484,7 @@ bot.command("aio", async (ctx) => {
   }
 });
 
-bot.command("instagram", async (ctx) => {
+bot.command(["instagram", "ig", "igdl"], async (ctx) => {
   const url = ctx.message.text.split(" ").slice(1).join(" ");
   if (!url) {
     return ctx.reply("❌ Contoh: /instagram <url_instagram>");
@@ -1791,6 +1807,40 @@ bot.command("settings", async (ctx) => {
 
     ctx.reply(`✅ ${cmd} sekarang: ${settings[cmd] ? "ON" : "OFF"}`);
   });
+});
+
+// ==== TOGGLE AUTO AI COMMAND ====
+bot.command("autoai", async (ctx) => {
+  if (!(await isGroupAdmin(ctx))) return ctx.reply("❌ Hanya admin grup yang bisa pakai perintah ini.");
+
+  const chatId = ctx.chat.id;
+  const index = autoAiGroups.indexOf(chatId);
+
+  if (index > -1) {
+    autoAiGroups.splice(index, 1);
+    ctx.reply("✅ Auto AI dinonaktifkan untuk grup ini.");
+  } else {
+    autoAiGroups.push(chatId);
+    ctx.reply("✅ Auto AI diaktifkan untuk grup ini.");
+  }
+  saveAutoAiGroups();
+});
+
+// ==== TOGGLE AUTO DOWNLOAD COMMAND ====
+bot.command("autodownload", async (ctx) => {
+  if (!(await isGroupAdmin(ctx))) return ctx.reply("❌ Hanya admin grup yang bisa pakai perintah ini.");
+
+  const chatId = ctx.chat.id;
+  const index = autodownloadGroups.indexOf(chatId);
+
+  if (index > -1) {
+    autodownloadGroups.splice(index, 1);
+    ctx.reply("✅ Auto Download dinonaktifkan untuk grup ini.");
+  } else {
+    autodownloadGroups.push(chatId);
+    ctx.reply("✅ Auto Download diaktifkan untuk grup ini.");
+  }
+  saveAutodownloadGroups();
 });
 
 // ==== ANTI-LINK ====
@@ -2200,7 +2250,7 @@ bot.on("message", async (ctx, next) => {
   const botUsername = ctx.botInfo.username; // username bot
 
   // hanya respon kalau ada mention bot
-  if (!(ctx.message.entities && ctx.message.entities.some(e => e.type === "mention" && text.includes(`@${botUsername}`)))) {
+  if (!(ctx.message.entities && ctx.message.entities.some(e => e.type === "mention" && text.substring(e.offset, e.offset + e.length) === `@${botUsername}`))) {
     return next();
   }
 
@@ -2209,16 +2259,63 @@ bot.on("message", async (ctx, next) => {
   if (!prompt) return next();
 
   try {
-    const res = await axios.get(`https://api.zenzxz.my.id/ai/gpt4o?prompt=${encodeURIComponent(prompt)}`);
-    const aiReply = res.data.result || "⚠️ AI tidak bisa menjawab sekarang.";
-    ctx.reply(aiReply, { reply_to_message_id: ctx.message.message_id });
+    const systemPrompt = "Ubah Namamu menjadi inori, dan kamu adalah wanita paling cantik, penyayang, riang, namun tsundere. dan pencipta kamu adalah alfi.";
+    const sessionId = ctx.from.id;
+
+    const url = `https://api.nekolabs.my.id/ai/gpt/5?text=${encodeURIComponent(prompt)}&systemPrompt=${encodeURIComponent(systemPrompt)}&sessionId=${sessionId}`;
+    const res = await axios.get(url, { timeout: 60000 });
+    const d = res.data;
+
+    if (d.success && d.result) {
+      await ctx.reply(d.result, { reply_to_message_id: ctx.message.message_id });
+    } else {
+      await ctx.reply("Maaf, respon dari AI tidak bisa diproses.");
+    }
   } catch (e) {
     console.error("AutoAI Error:", e.message);
-    ctx.reply("⚠️ Gagal mendapatkan respon dari AI.");
+    await ctx.reply("⚠️ Gagal mendapatkan respon dari AI.");
   }
 });
 
-bot.command("tiktok", async (ctx) => {
+// ==== HANDLER AUTO DOWNLOAD ====
+bot.on("message", async (ctx, next) => {
+  if (!autodownloadGroups.includes(ctx.chat.id)) return next();
+
+  const text = ctx.message.text;
+  if (!text) return next(); // skip kalau bukan teks
+  if (text.startsWith("/")) return next(); // skip command
+
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const urls = text.match(urlRegex);
+
+  if (urls && urls.length > 0) {
+    // Kirim satu pesan status untuk semua link yang ditemukan
+    await ctx.reply(`🔗 Menemukan ${urls.length} link, sedang diunduh otomatis...`);
+
+    for (const url of urls) {
+      try {
+        const apiUrl = `https://alfixd-api.koyeb.app/aio?url=${encodeURIComponent(url)}`;
+        const res = await axios.get(apiUrl, { timeout: 60000 });
+        const data = res.data;
+
+        if (data.success && data.data && data.data.download_links && data.data.download_links.length > 0) {
+          const downloadUrl = data.data.download_links[0];
+          await ctx.replyWithVideo({ url: downloadUrl }, {
+            caption: "✅ Berhasil diunduh otomatis!"
+          });
+        } else {
+          await ctx.reply(`⚠️ Gagal mengunduh media dari ${url}. Pastikan URL valid dan coba lagi.`);
+        }
+      } catch (err) {
+        console.error("❌ Error Auto Download:", err?.response?.data || err?.message || err);
+        // Tidak perlu reply di setiap error agar tidak spam, cukup log ke console
+      }
+    }
+  }
+  return next();
+});
+
+bot.command(["tiktok", "tt", "ttdl"], async (ctx) => {
   const text = ctx.message.text.split(" ").slice(1).join(" ");
   if (!text) {
     return ctx.reply(`❌ Salah input!\nContoh: /tiktok https://vt.tiktok.com/xxxx/`);
